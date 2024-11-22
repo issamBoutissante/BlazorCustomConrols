@@ -1,0 +1,53 @@
+﻿<style>
+    .toggle-container {
+        width: 60px;
+        height: 30px;
+        border-radius: 15px;
+        background-color: #ccc;
+        display: flex;
+        align-items: center;
+        padding: 2px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .toggle-container.toggle-on {
+            background-color: #4caf50;
+        }
+
+        .toggle-container.toggle-off {
+            background-color: #f44336;
+        }
+
+    .toggle-circle {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background-color: white;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease;
+    }
+
+    .toggle-container.toggle-on .toggle-circle {
+        transform: translateX(30px);
+    }
+
+    .toggle-container.toggle-off .toggle-circle {
+        transform: translateX(0);
+    }
+
+</style>
+<div class="@(IsOn ? "toggle-container toggle-on" : "toggle-container toggle-off")" @onclick="Toggle">
+    <div class="toggle-circle"></div>
+</div>
+
+@code {
+    [Parameter] public bool IsOn { get; set; }
+    [Parameter] public EventCallback<bool> IsOnChanged { get; set; }
+
+    private async Task Toggle()
+    {
+        IsOn = !IsOn;
+        await IsOnChanged.InvokeAsync(IsOn);
+    }
+}

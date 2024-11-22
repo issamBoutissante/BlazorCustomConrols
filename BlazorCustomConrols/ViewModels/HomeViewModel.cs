@@ -45,7 +45,8 @@ namespace BlazorCustomConrols.ViewModels
         public uint UnsignedValue { get; set; }
         public decimal DecimalValue { get; set; }
         public double DoubleValue { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public bool IsFeatureEnabled { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

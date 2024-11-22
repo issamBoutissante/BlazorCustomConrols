@@ -61,9 +61,11 @@
                        Class="col-md-6"
                        @bind-Value="ViewModel.Description"
                        IsReadOnly="@ViewModel.IsReadOnlyMode" />
+<!--Test Toggle-->
+<ToggleButton @bind-IsOn="ViewModel.IsFeatureEnabled" />
 
+<p>Feature is @(ViewModel.IsFeatureEnabled ? "Enabled" : "Disabled")</p>
 
-<!---->
 @code {
     private HomeViewModel ViewModel = new();  
 }
