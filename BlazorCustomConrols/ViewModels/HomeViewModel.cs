@@ -8,6 +8,17 @@ namespace BlazorCustomConrols.ViewModels
         public List<string> Countries = new() { "USA", "Canada", "Mexico" };
         private readonly Dictionary<string, string> _values = new();
         public StatusEnum Status { get; set; } = StatusEnum.Pending;
+        private DateTime dateOfBirth = DateTime.Now;
+
+        public DateTime DateOfBirth
+        {
+            get { return dateOfBirth; }
+            set { 
+                dateOfBirth = value;
+                OnPropertyChanged(nameof(DateOfBirth));
+            }
+        }
+
         public string this[string key]
         {
             get => _values.ContainsKey(key) ? _values[key] : string.Empty;

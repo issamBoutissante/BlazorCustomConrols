@@ -1,0 +1,31 @@
+﻿<div class="@(Class) form-group">
+    <label>@Label</label>
+    @if (IsReadOnly)
+    {
+        <input type="date" class="form-control" value="@Value.ToString("yyyy-MM-dd")" readonly />
+    }
+    else
+    {
+        <input type="date" class="form-control"
+               value="@Value.ToString("yyyy-MM-dd")"
+               @oninput="async (e) => await OnValueChanged(e)" />
+    }
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public DateTime Value { get; set; }
+    [Parameter] public EventCallback<DateTime> ValueChanged { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; } = true;
+    [Parameter] public string Class { get; set; } = string.Empty;
+
+    private async Task OnValueChanged(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e.Value?.ToString(), out var date))
+        {
+            Value = date;
+            await ValueChanged.InvokeAsync(Value);
+            StateHasChanged(); // Ensure UI re-renders
+        }
+    }
+}

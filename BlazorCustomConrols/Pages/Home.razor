@@ -28,6 +28,11 @@
 
 <p>Selected Status: @ViewModel.Status</p>
 
+<DateInputField Label="Select Date"
+                @bind-Value="ViewModel.DateOfBirth"
+                IsReadOnly="false" />
+
+<p>Selected Date: @ViewModel.DateOfBirth.ToString("yyyy-MM-dd")</p>
 
 @code {
     private HomeViewModel ViewModel = new();
