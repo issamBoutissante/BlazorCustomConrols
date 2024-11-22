@@ -5,6 +5,7 @@ namespace BlazorCustomConrols.ViewModels
 {
     public class HomeViewModel : INotifyPropertyChanged
     {
+        public List<string> Countries = new() { "USA", "Canada", "Mexico" };
         private readonly Dictionary<string, string> _values = new();
 
         public string this[string key]
@@ -12,17 +13,8 @@ namespace BlazorCustomConrols.ViewModels
             get => _values.ContainsKey(key) ? _values[key] : string.Empty;
             set
             {
-                if (key == "LastName")
-                {
-                    _values[key] = value;
-                    OnPropertyChanged(key);
-                    OnPropertyChanged(nameof(FullName)); // Update FullName when LastName changes
-                }
-                else
-                {
-                    _values[key] = value;
-                    OnPropertyChanged(key);
-                }
+                _values[key] = value;
+                OnPropertyChanged(key);
             }
         }
 
@@ -36,7 +28,6 @@ namespace BlazorCustomConrols.ViewModels
             }
         }
 
-  
         public string FullName => $"{FirstName} {this["LastName"]}";
 
         public event PropertyChangedEventHandler? PropertyChanged;

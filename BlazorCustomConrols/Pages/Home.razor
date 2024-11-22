@@ -1,20 +1,25 @@
 ﻿@page "/"
 @using BlazorCustomConrols.ViewModels
 
-<EditableInputField Label="First Name *"
+<EditableDropdownField Label="Select Country"
+                       Class="col-md-6"
+                       Items="@(ViewModel.Countries)"
+                       @bind-SelectedValue="@(ViewModel["SelectedCountry"])"
+                       IsReadOnly="@IsReadOnlyMode" />
+
+<p>Selected Country: @ViewModel["SelectedCountry"]</p>
+
+<EditableInputField Label="First Name"
                     Class="col-md-6"
-                    @bind-Value="@(this.ViewModel.FirstName)"
+                    @bind-Value="@(ViewModel.FirstName)"
                     IsReadOnly="@IsReadOnlyMode" />
 
-<EditableInputField Label="Last Name *"
+<EditableInputField Label="Last Name"
                     Class="col-md-6"
-                    @bind-Value="@(this.ViewModel["LastName"])"
+                    @bind-Value="@(ViewModel["LastName"])"
                     IsReadOnly="@IsReadOnlyMode" />
 
-<EditableInputField Label="Full Name *"
-                    Class="col-md-6"
-                    Value="@(this.ViewModel.FullName)"
-                    IsReadOnly="true" />
+<p>Full Name: @ViewModel.FullName</p>
 
 @code {
     private HomeViewModel ViewModel = new();

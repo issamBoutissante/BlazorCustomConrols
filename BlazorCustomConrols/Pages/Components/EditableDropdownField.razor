@@ -1,0 +1,49 @@
+﻿<div class="@(Class) form-group" style="@(IsVisible ? "" : "display: none;")">
+    <label>@Label</label>
+    @if (IsReadOnly)
+    {
+        <select class="form-control" disabled>
+            @if (string.IsNullOrEmpty(SelectedValue))
+            {
+                <option value="" selected disabled>Select an option</option>
+            }
+            @foreach (var item in Items)
+            {
+                <option value="@item" selected="@((item == SelectedValue) ? "selected" : null)">@item</option>
+            }
+        </select>
+    }
+    else
+    {
+        <select class="form-control" @onchange="OnSelectedValueChanged">
+            @if (string.IsNullOrEmpty(SelectedValue))
+            {
+                <option value="" selected disabled>Select an option</option>
+            }
+            @foreach (var item in Items)
+            {
+                <option value="@item" selected="@((item == SelectedValue) ? "selected" : null)">@item</option>
+            }
+        </select>
+    }
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public List<string> Items { get; set; } = new();
+    [Parameter] public string SelectedValue { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string> SelectedValueChanged { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; } = true;
+    [Parameter] public bool IsVisible { get; set; } = true;
+    [Parameter] public string Class { get; set; } = string.Empty;
+
+    private async Task OnSelectedValueChanged(ChangeEventArgs e)
+    {
+        var newValue = e.Value?.ToString() ?? string.Empty;
+        if (SelectedValue != newValue)
+        {
+            SelectedValue = newValue;
+            await SelectedValueChanged.InvokeAsync(newValue);
+        }
+    }
+}
