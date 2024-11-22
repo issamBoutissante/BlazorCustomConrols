@@ -1,0 +1,26 @@
+﻿<div class="@(Class) form-group" style="@(IsVisible ? "" : "display: none;")">
+    <label>@Label</label>
+    @if (IsReadOnly)
+    {
+        <input type="text" class="form-control" value="@Value" readonly />
+    }
+    else
+    {
+        <input type="text" class="form-control" value="@Value" @oninput="HandleInputChange" />
+    }
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public string Value { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; } = true;
+    [Parameter] public bool IsVisible { get; set; } = true;
+    [Parameter] public string Class { get; set; } = string.Empty;
+
+    private async Task HandleInputChange(ChangeEventArgs e)
+    {
+        var newValue = e.Value?.ToString() ?? string.Empty;
+        await ValueChanged.InvokeAsync(newValue);
+    }
+}

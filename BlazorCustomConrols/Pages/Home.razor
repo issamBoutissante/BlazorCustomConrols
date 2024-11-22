@@ -1,0 +1,22 @@
+﻿@page "/"
+@using BlazorCustomConrols.ViewModels
+
+<EditableInputField Label="First Name *"
+                    Class="col-md-6"
+                    @bind-Value="@(this.ViewModel.FirstName)"
+                    IsReadOnly="@IsReadOnlyMode" />
+
+<EditableInputField Label="Last Name *"
+                    Class="col-md-6"
+                    @bind-Value="@(this.ViewModel["LastName"])"
+                    IsReadOnly="@IsReadOnlyMode" />
+
+<EditableInputField Label="Full Name *"
+                    Class="col-md-6"
+                    Value="@(this.ViewModel.FullName)"
+                    IsReadOnly="true" />
+
+@code {
+    private HomeViewModel ViewModel = new();
+    private bool IsReadOnlyMode = false;
+}
