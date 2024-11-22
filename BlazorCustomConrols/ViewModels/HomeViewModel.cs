@@ -40,6 +40,12 @@ namespace BlazorCustomConrols.ViewModels
         }
 
         public string FullName => $"{FirstName} {this["LastName"]}";
+        public bool IsReadOnlyMode = false;
+        public int SignedValue { get; set; }
+        public uint UnsignedValue { get; set; }
+        public decimal DecimalValue { get; set; }
+        public double DoubleValue { get; set; }
+        public string Description { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

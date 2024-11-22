@@ -1,0 +1,25 @@
+﻿<div class="@(Class) form-group">
+    <label>@Label</label>
+    @if (IsReadOnly)
+    {
+        <textarea class="form-control" rows="5" readonly>@Value</textarea>
+    }
+    else
+    {
+        <textarea class="form-control" rows="5" value="@Value" @oninput="HandleInputChange"></textarea>
+    }
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public string Value { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; } = true;
+    [Parameter] public string Class { get; set; } = string.Empty;
+
+    private async Task HandleInputChange(ChangeEventArgs e)
+    {
+        var newValue = e.Value?.ToString() ?? string.Empty;
+        await ValueChanged.InvokeAsync(newValue);
+    }
+}

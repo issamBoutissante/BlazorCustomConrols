@@ -5,19 +5,19 @@
                        Class="col-md-6"
                        Items="@(ViewModel.Countries)"
                        @bind-SelectedValue="@(ViewModel["SelectedCountry"])"
-                       IsReadOnly="@IsReadOnlyMode" />
+                       IsReadOnly="@ViewModel.IsReadOnlyMode" />
 
 <p>Selected Country: @ViewModel["SelectedCountry"]</p>
 
 <EditableInputField Label="First Name"
                     Class="col-md-6"
                     @bind-Value="@(ViewModel.FirstName)"
-                    IsReadOnly="@IsReadOnlyMode" />
+                    IsReadOnly="@ViewModel.IsReadOnlyMode" />
 
 <EditableInputField Label="Last Name"
                     Class="col-md-6"
                     @bind-Value="@(ViewModel["LastName"])"
-                    IsReadOnly="@IsReadOnlyMode" />
+                    IsReadOnly="@ViewModel.IsReadOnlyMode" />
 
 <p>Full Name: @ViewModel.FullName</p>
 
@@ -37,34 +37,33 @@
 
 <!--Test Number input-->
 <EditableNumberField Label="Signed Integer Value"
-                     @bind-Value="SignedValue"
+                     @bind-Value="ViewModel.SignedValue"
                      IsUnsigned="false"
                      Class="col-md-6"
-                     IsReadOnly="IsReadOnlyMode" />
+                     IsReadOnly="@ViewModel.IsReadOnlyMode" />
 
 <EditableNumberField Label="Unsigned Integer Value"
-                     @bind-Value="UnsignedValue"
+                     @bind-Value="ViewModel.UnsignedValue"
                      IsUnsigned="true"
                      Class="col-md-6"
-                     IsReadOnly="IsReadOnlyMode" />
+                     IsReadOnly="@ViewModel.IsReadOnlyMode" />
 
 <EditableNumberField Label="Decimal Value"
-                     @bind-Value="DecimalValue"
+                     @bind-Value="ViewModel.DecimalValue"
                      Class="col-md-6"
-                     IsReadOnly="IsReadOnlyMode" />
+                     IsReadOnly="@ViewModel.IsReadOnlyMode" />
 
 <EditableNumberField Label="Double Value"
-                     @bind-Value="DoubleValue"
+                     @bind-Value="ViewModel.DoubleValue"
                      Class="col-md-6" 
-                     IsReadOnly="IsReadOnlyMode"/>
+                     IsReadOnly="@ViewModel.IsReadOnlyMode" />
+<EditableTextareaField Label="Description"
+                       Class="col-md-6"
+                       @bind-Value="ViewModel.Description"
+                       IsReadOnly="@ViewModel.IsReadOnlyMode" />
 
 
 <!---->
 @code {
-    private HomeViewModel ViewModel = new();
-    private bool IsReadOnlyMode = false;
-    private int SignedValue { get; set; }
-    private uint UnsignedValue { get; set; }
-    private decimal DecimalValue { get; set; }
-    private double DoubleValue { get; set; }
+    private HomeViewModel ViewModel = new();  
 }
