@@ -1,0 +1,54 @@
+﻿@typeparam T
+<div class="@(Class) form-group" style="@(IsVisible ? "" : "display: none;")">
+    <label>@Label</label>
+    <input type="number" class="form-control"
+           @bind-value="ValueString"
+           @bind-value:event="oninput"
+           min="@(IsUnsigned ? "0" : null)"
+           disabled="@IsReadOnly" />
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public required T Value { get; set; }
+    [Parameter] public EventCallback<T> ValueChanged { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; } = true;
+    [Parameter] public bool IsVisible { get; set; } = true;
+    [Parameter] public string Class { get; set; } = string.Empty;
+    [Parameter] public bool IsUnsigned { get; set; } = false;
+
+    private string ValueString
+    {
+        get => Value?.ToString() ?? string.Empty;
+        set
+        {
+            if (TryParse(value, out var parsedValue))
+            {
+                Value = parsedValue;
+                ValueChanged.InvokeAsync(Value);
+            }
+        }
+    }
+
+    private bool TryParse(string value, out T result)
+    {
+        try
+        {
+            result = typeof(T) switch
+            {
+                Type t when t == typeof(int) => (T)(object)int.Parse(value),
+                Type t when t == typeof(uint) => (T)(object)uint.Parse(value),
+                Type t when t == typeof(decimal) => (T)(object)decimal.Parse(value),
+                Type t when t == typeof(double) => (T)(object)double.Parse(value),
+                _ => default!
+            };
+
+            return true;
+        }
+        catch
+        {
+            result = default!;
+            return false;
+        }
+    }
+}

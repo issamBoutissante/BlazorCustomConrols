@@ -34,7 +34,37 @@
 
 <p>Selected Date: @ViewModel.DateOfBirth.ToString("yyyy-MM-dd")</p>
 
+
+<!--Test Number input-->
+<EditableNumberField Label="Signed Integer Value"
+                     @bind-Value="SignedValue"
+                     IsUnsigned="false"
+                     Class="col-md-6"
+                     IsReadOnly="IsReadOnlyMode" />
+
+<EditableNumberField Label="Unsigned Integer Value"
+                     @bind-Value="UnsignedValue"
+                     IsUnsigned="true"
+                     Class="col-md-6"
+                     IsReadOnly="IsReadOnlyMode" />
+
+<EditableNumberField Label="Decimal Value"
+                     @bind-Value="DecimalValue"
+                     Class="col-md-6"
+                     IsReadOnly="IsReadOnlyMode" />
+
+<EditableNumberField Label="Double Value"
+                     @bind-Value="DoubleValue"
+                     Class="col-md-6" 
+                     IsReadOnly="IsReadOnlyMode"/>
+
+
+<!---->
 @code {
     private HomeViewModel ViewModel = new();
     private bool IsReadOnlyMode = false;
+    private int SignedValue { get; set; }
+    private uint UnsignedValue { get; set; }
+    private decimal DecimalValue { get; set; }
+    private double DoubleValue { get; set; }
 }
