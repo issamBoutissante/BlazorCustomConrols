@@ -21,6 +21,14 @@
 
 <p>Full Name: @ViewModel.FullName</p>
 
+<EnumDropdownField TEnum="StatusEnum"
+                   Label="Select Status"
+                   @bind-SelectedValue="ViewModel.Status"
+                   IsReadOnly="false" />
+
+<p>Selected Status: @ViewModel.Status</p>
+
+
 @code {
     private HomeViewModel ViewModel = new();
     private bool IsReadOnlyMode = false;

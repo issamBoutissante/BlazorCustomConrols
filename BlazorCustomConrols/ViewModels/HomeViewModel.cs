@@ -7,7 +7,7 @@ namespace BlazorCustomConrols.ViewModels
     {
         public List<string> Countries = new() { "USA", "Canada", "Mexico" };
         private readonly Dictionary<string, string> _values = new();
-
+        public StatusEnum Status { get; set; } = StatusEnum.Pending;
         public string this[string key]
         {
             get => _values.ContainsKey(key) ? _values[key] : string.Empty;
@@ -36,5 +36,12 @@ namespace BlazorCustomConrols.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+    public enum StatusEnum
+    {
+        Active,
+        Inactive,
+        Pending,
+        Completed
     }
 }
