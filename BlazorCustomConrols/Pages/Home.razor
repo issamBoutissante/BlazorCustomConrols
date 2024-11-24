@@ -1,81 +1,87 @@
 ﻿@page "/"
-@using BlazorCustomConrols.ViewModels
+@using BlazorCustomControls.ViewModels
 
+<h1>Maker.AI Controls Demo</h1>
+
+<!-- Dropdown Field -->
+<h2>Editable Dropdown Field</h2>
 <EditableDropdownField Label="Select Country"
                        Class="col-md-6"
                        Items="@(ViewModel.Countries)"
                        @bind-SelectedValue="@(ViewModel["SelectedCountry"])"
                        IsReadOnly="@ViewModel.IsReadOnlyMode" />
-
 <p>Selected Country: @ViewModel["SelectedCountry"]</p>
 
+<!-- Input Fields -->
+<h2>Editable Input Fields</h2>
 <EditableInputField Label="First Name"
                     Class="col-md-6"
                     @bind-Value="@(ViewModel.FirstName)"
                     IsReadOnly="@ViewModel.IsReadOnlyMode" />
-
 <EditableInputField Label="Last Name"
                     Class="col-md-6"
                     @bind-Value="@(ViewModel["LastName"])"
                     IsReadOnly="@ViewModel.IsReadOnlyMode" />
-
 <p>Full Name: @ViewModel.FullName</p>
 
+<!-- Enum Dropdown -->
+<h2>Enum Dropdown Field</h2>
 <EnumDropdownField TEnum="StatusEnum"
                    Label="Select Status"
                    @bind-SelectedValue="ViewModel.Status"
-                   IsReadOnly="false" />
-
+                   IsReadOnly="@ViewModel.IsReadOnlyMode" />
 <p>Selected Status: @ViewModel.Status</p>
 
+<!-- Date Input -->
+<h2>Date Input Field</h2>
 <DateInputField Label="Select Date"
                 @bind-Value="ViewModel.DateOfBirth"
-                IsReadOnly="false" />
-
+                IsReadOnly="@ViewModel.IsReadOnlyMode" />
 <p>Selected Date: @ViewModel.DateOfBirth.ToString("yyyy-MM-dd")</p>
 
-
-<!--Test Number input-->
+<!-- Number Inputs -->
+<h2>Editable Number Fields</h2>
 <EditableNumberField Label="Signed Integer Value"
                      @bind-Value="ViewModel.SignedValue"
                      IsUnsigned="false"
                      Class="col-md-6"
                      IsReadOnly="@ViewModel.IsReadOnlyMode" />
-
 <EditableNumberField Label="Unsigned Integer Value"
                      @bind-Value="ViewModel.UnsignedValue"
                      IsUnsigned="true"
                      Class="col-md-6"
                      IsReadOnly="@ViewModel.IsReadOnlyMode" />
-
 <EditableNumberField Label="Decimal Value"
                      @bind-Value="ViewModel.DecimalValue"
                      Class="col-md-6"
                      IsReadOnly="@ViewModel.IsReadOnlyMode" />
-
 <EditableNumberField Label="Double Value"
                      @bind-Value="ViewModel.DoubleValue"
-                     Class="col-md-6" 
+                     Class="col-md-6"
                      IsReadOnly="@ViewModel.IsReadOnlyMode" />
+
+<!-- Textarea Field -->
+<h2>Editable Textarea Field</h2>
 <EditableTextareaField Label="Description"
                        Class="col-md-6"
                        @bind-Value="ViewModel.Description"
                        IsReadOnly="@ViewModel.IsReadOnlyMode" />
-<!--Test Toggle-->
-<ToggleButton @bind-IsOn="ViewModel.IsFeatureEnabled" />
 
+<!-- Toggle Button -->
+<h2>Toggle Button</h2>
+<ToggleButton @bind-IsOn="ViewModel.IsFeatureEnabled" />
 <p>Feature is @(ViewModel.IsFeatureEnabled ? "Enabled" : "Disabled")</p>
 
-
-<!--Test RadioGroup-->
+<!-- Radio Group -->
+<h2>Radio Group</h2>
 <RadioGroup @bind-SelectedValue="ViewModel.SelectedOption">
     <RadioButton Value="Option1" Label="Option 1" />
     <RadioButton Value="Option2" Label="Option 2" />
     <RadioButton Value="Option3" Label="Option 3" />
 </RadioGroup>
-
 <p>Selected Option: @ViewModel.SelectedOption</p>
 
 @code {
-    private HomeViewModel ViewModel = new();  
+    // ViewModel holds the state for all demo controls
+    private HomeViewModel ViewModel = new();
 }

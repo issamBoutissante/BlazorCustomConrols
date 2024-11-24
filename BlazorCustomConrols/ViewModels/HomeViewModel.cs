@@ -1,66 +1,124 @@
 ﻿using System.ComponentModel;
 using System.Collections.Generic;
 
-namespace BlazorCustomConrols.ViewModels
+namespace BlazorCustomControls.ViewModels;
+
+/// <summary>
+/// The ViewModel that holds the state for the demo page.
+/// Implements INotifyPropertyChanged to enable binding and state updates.
+/// </summary>
+public class HomeViewModel : INotifyPropertyChanged
 {
-    public class HomeViewModel : INotifyPropertyChanged
+    /// <summary>
+    /// List of countries for the dropdown field.
+    /// </summary>
+    public List<string> Countries { get; } = new() { "USA", "Canada", "Mexico" };
+
+    /// <summary>
+    /// Dictionary to simulate dynamic property storage using indexers.
+    /// </summary>
+    private readonly Dictionary<string, string> _values = new();
+
+    /// <summary>
+    /// Status selection for the enum dropdown.
+    /// </summary>
+    public StatusEnum Status { get; set; } = StatusEnum.Pending;
+
+    /// <summary>
+    /// Selected option in the radio group.
+    /// </summary>
+    public string SelectedOption { get; set; } = "Option1";
+
+    private DateTime dateOfBirth = DateTime.Now;
+
+    /// <summary>
+    /// Date input value for the date picker.
+    /// </summary>
+    public DateTime DateOfBirth
     {
-        public List<string> Countries = new() { "USA", "Canada", "Mexico" };
-        private readonly Dictionary<string, string> _values = new();
-        public StatusEnum Status { get; set; } = StatusEnum.Pending;
-        private DateTime dateOfBirth = DateTime.Now;
-        public string SelectedOption { get; set; } = "Option1";
-
-        public DateTime DateOfBirth
+        get => dateOfBirth;
+        set
         {
-            get { return dateOfBirth; }
-            set { 
-                dateOfBirth = value;
-                OnPropertyChanged(nameof(DateOfBirth));
-            }
-        }
-
-        public string this[string key]
-        {
-            get => _values.ContainsKey(key) ? _values[key] : string.Empty;
-            set
-            {
-                _values[key] = value;
-                OnPropertyChanged(key);
-            }
-        }
-
-        public string FirstName
-        {
-            get => this[nameof(FirstName)];
-            set
-            {
-                this[nameof(FirstName)] = value;
-                OnPropertyChanged(nameof(FullName)); // Update FullName when FirstName changes
-            }
-        }
-
-        public string FullName => $"{FirstName} {this["LastName"]}";
-        public bool IsReadOnlyMode = false;
-        public int SignedValue { get; set; }
-        public uint UnsignedValue { get; set; }
-        public decimal DecimalValue { get; set; }
-        public double DoubleValue { get; set; }
-        public string Description { get; set; } = string.Empty;
-        public bool IsFeatureEnabled { get; set; }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            dateOfBirth = value;
+            OnPropertyChanged(nameof(DateOfBirth));
         }
     }
-    public enum StatusEnum
+
+    /// <summary>
+    /// Dynamic property access via indexer.
+    /// </summary>
+    public string this[string key]
     {
-        Active,
-        Inactive,
-        Pending,
-        Completed
+        get => _values.ContainsKey(key) ? _values[key] : string.Empty;
+        set
+        {
+            _values[key] = value;
+            OnPropertyChanged(key);
+        }
     }
+
+    /// <summary>
+    /// First name input field.
+    /// </summary>
+    public string FirstName
+    {
+        get => this[nameof(FirstName)];
+        set
+        {
+            this[nameof(FirstName)] = value;
+            OnPropertyChanged(nameof(FullName)); // Update FullName when FirstName changes
+        }
+    }
+
+    /// <summary>
+    /// Computed full name from FirstName and LastName.
+    /// </summary>
+    public string FullName => $"{FirstName} {this["LastName"]}";
+
+    /// <summary>
+    /// Read-only mode toggle for controls.
+    /// </summary>
+    public bool IsReadOnlyMode { get; set; } = false;
+
+    /// <summary>
+    /// Number input values.
+    /// </summary>
+    public int SignedValue { get; set; }
+    public uint UnsignedValue { get; set; }
+    public decimal DecimalValue { get; set; }
+    public double DoubleValue { get; set; }
+
+    /// <summary>
+    /// Description for the textarea field.
+    /// </summary>
+    public string Description { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Toggle button state.
+    /// </summary>
+    public bool IsFeatureEnabled { get; set; }
+
+    /// <summary>
+    /// Event for property changes.
+    /// </summary>
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    /// <summary>
+    /// Triggers property change notifications.
+    /// </summary>
+    public void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
+
+/// <summary>
+/// Enum used in the EnumDropdownField.
+/// </summary>
+public enum StatusEnum
+{
+    Active,
+    Inactive,
+    Pending,
+    Completed
 }
