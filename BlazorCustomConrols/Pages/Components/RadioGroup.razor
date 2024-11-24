@@ -1,0 +1,27 @@
+﻿<style>
+    .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+</style>
+<CascadingValue Value="this">
+    <div class="radio-group">
+        @if (ChildContent != null)
+        {
+            @ChildContent
+        }
+    </div>
+</CascadingValue>
+
+@code {
+    [Parameter] public string SelectedValue { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string> SelectedValueChanged { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    public async Task SelectValue(string value)
+    {
+        SelectedValue = value;
+        await SelectedValueChanged.InvokeAsync(value);
+    }
+}

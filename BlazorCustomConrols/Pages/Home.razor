@@ -66,6 +66,16 @@
 
 <p>Feature is @(ViewModel.IsFeatureEnabled ? "Enabled" : "Disabled")</p>
 
+
+<!--Test RadioGroup-->
+<RadioGroup @bind-SelectedValue="ViewModel.SelectedOption">
+    <RadioButton Value="Option1" Label="Option 1" />
+    <RadioButton Value="Option2" Label="Option 2" />
+    <RadioButton Value="Option3" Label="Option 3" />
+</RadioGroup>
+
+<p>Selected Option: @ViewModel.SelectedOption</p>
+
 @code {
     private HomeViewModel ViewModel = new();  
 }

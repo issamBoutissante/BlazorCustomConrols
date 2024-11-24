@@ -9,6 +9,7 @@ namespace BlazorCustomConrols.ViewModels
         private readonly Dictionary<string, string> _values = new();
         public StatusEnum Status { get; set; } = StatusEnum.Pending;
         private DateTime dateOfBirth = DateTime.Now;
+        public string SelectedOption { get; set; } = "Option1";
 
         public DateTime DateOfBirth
         {
