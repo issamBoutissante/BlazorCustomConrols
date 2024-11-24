@@ -2,7 +2,7 @@
     <label>@Label</label>
     @if (IsReadOnly)
     {
-        <input type="date" class="form-control" value="@Value.ToString("yyyy-MM-dd")" readonly />
+        <input type="date" class="form-control" value="@Value.ToString("yyyy-MM-dd")" readonly disabled/>
     }
     else
     {

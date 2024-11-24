@@ -2,6 +2,9 @@
 @using BlazorCustomControls.ViewModels
 
 <h1>Maker.AI Controls Demo</h1>
+<ToggleButton @bind-IsOn="ViewModel.IsReadOnlyMode" />
+<p>Controls are @(ViewModel.IsReadOnlyMode ? "Read Only Mode" : "Read Write Mode")</p>
+
 
 <!-- Dropdown Field -->
 <h2>Editable Dropdown Field</h2>
