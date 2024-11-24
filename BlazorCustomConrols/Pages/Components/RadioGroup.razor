@@ -6,7 +6,7 @@
     }
 </style>
 <CascadingValue Value="this">
-    <div class="radio-group">
+    <div class="@(Class) radio-group">
         @if (ChildContent != null)
         {
             @ChildContent
@@ -18,7 +18,8 @@
     [Parameter] public string SelectedValue { get; set; } = string.Empty;
     [Parameter] public EventCallback<string> SelectedValueChanged { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public bool IsReadOnly { get; set; } = false; // New Parameter
+    [Parameter] public bool IsReadOnly { get; set; } = false;
+    [Parameter] public string Class { get; set; } = string.Empty;
 
     public async Task SelectValue(string value)
     {

@@ -42,14 +42,15 @@
     }
 
 </style>
-<div class="@(IsOn ? "toggle-container toggle-on" : "toggle-container toggle-off") @(IsReadOnly ? "read-only" : "")" @onclick="OnToggle">
+<div class="@(Class) @(IsOn ? "toggle-container toggle-on" : "toggle-container toggle-off") @(IsReadOnly ? "read-only" : "")" @onclick="OnToggle">
     <div class="toggle-circle"></div>
 </div>
 
 @code {
     [Parameter] public bool IsOn { get; set; }
     [Parameter] public EventCallback<bool> IsOnChanged { get; set; }
-    [Parameter] public bool IsReadOnly { get; set; } = false; // New Parameter
+    [Parameter] public bool IsReadOnly { get; set; } = false;
+    [Parameter] public string Class { get; set; } = string.Empty;
 
     private async Task OnToggle()
     {

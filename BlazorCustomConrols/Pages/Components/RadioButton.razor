@@ -39,7 +39,7 @@
     }
 
 </style>
-<div class="radio-button @(ParentGroup.IsReadOnly ? "read-only" : "")" @onclick="HandleClick">
+<div class="@(Class) radio-button @(ParentGroup.IsReadOnly ? "read-only" : "")" @onclick="HandleClick">
     <div class="circle-container">
         <div class="circle @(IsSelected ? "selected" : "")"></div>
     </div>
@@ -51,6 +51,7 @@
 
     [Parameter] public string Value { get; set; } = string.Empty;
     [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public string Class { get; set; } = string.Empty;
 
     private bool IsSelected => ParentGroup?.SelectedValue == Value;
 
