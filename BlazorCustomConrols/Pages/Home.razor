@@ -27,6 +27,16 @@
                     IsReadOnly="@ViewModel.IsReadOnlyMode" />
 <p>Full Name: @ViewModel.FullName</p>
 
+<!-- Email Field -->
+<h2>Email Fields</h2>
+<EditableEmailField Label="Email Address"
+                    Class="col-md-6"
+                    @bind-Value="ViewModel.Email"
+                    IsReadOnly="@ViewModel.IsReadOnlyMode"
+                    IsVisible="true" />
+
+<p>Entered Email: @ViewModel.Email</p>
+
 <!-- Enum Dropdown -->
 <h2>Enum Dropdown Field</h2>
 <EnumDropdownField TEnum="StatusEnum"

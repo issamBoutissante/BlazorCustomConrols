@@ -75,6 +75,7 @@ public class HomeViewModel : INotifyPropertyChanged
     /// </summary>
     public string FullName => $"{FirstName} {this["LastName"]}";
 
+    public string Email { get; set; } = string.Empty;
     /// <summary>
     /// Read-only mode toggle for controls.
     /// </summary>

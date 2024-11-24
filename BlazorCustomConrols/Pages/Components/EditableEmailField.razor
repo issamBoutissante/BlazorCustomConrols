@@ -1,0 +1,46 @@
+﻿<div class="@(Class) form-group" style="@(IsVisible ? "" : "display: none;")">
+    <label>@Label</label>
+    @if (IsReadOnly)
+    {
+        <input type="email" class="form-control" value="@Value" readonly disabled />
+    }
+    else
+    {
+        <input type="email" class="form-control" value="@Value" @oninput="HandleInputChange" />
+        @if (!IsValidEmail(Value))
+        {
+            <small class="text-danger">Invalid email format</small>
+        }
+    }
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public string Value { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; } = true;
+    [Parameter] public bool IsVisible { get; set; } = true;
+    [Parameter] public string Class { get; set; } = string.Empty;
+
+    private async Task HandleInputChange(ChangeEventArgs e)
+    {
+        var newValue = e.Value?.ToString() ?? string.Empty;
+        Value = newValue;
+        await ValueChanged.InvokeAsync(newValue);
+    }
+
+    private bool IsValidEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return true; // Empty field is considered valid until filled
+        try
+        {
+            var addr = new System.Net.Mail.MailAddress(email);
+            return addr.Address == email;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}
