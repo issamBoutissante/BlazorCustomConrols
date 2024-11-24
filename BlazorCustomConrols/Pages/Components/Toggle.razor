@@ -42,7 +42,7 @@
     }
 
 </style>
-<div class="@(IsOn ? "toggle-container toggle-on" : "toggle-container toggle-off") @(IsReadOnly ? "read-only" : "")" @onclick="Toggle">
+<div class="@(IsOn ? "toggle-container toggle-on" : "toggle-container toggle-off") @(IsReadOnly ? "read-only" : "")" @onclick="OnToggle">
     <div class="toggle-circle"></div>
 </div>
 
@@ -51,7 +51,7 @@
     [Parameter] public EventCallback<bool> IsOnChanged { get; set; }
     [Parameter] public bool IsReadOnly { get; set; } = false; // New Parameter
 
-    private async Task Toggle()
+    private async Task OnToggle()
     {
         if (!IsReadOnly) // Prevent toggling if read-only
         {

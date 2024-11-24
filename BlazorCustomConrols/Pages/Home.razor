@@ -2,13 +2,13 @@
 @using BlazorCustomControls.ViewModels
 
 <h1>Maker.AI Controls Demo</h1>
-<ToggleButton @bind-IsOn="ViewModel.IsReadOnlyMode" />
+<Toggle @bind-IsOn="ViewModel.IsReadOnlyMode" />
 <p>Controls are @(ViewModel.IsReadOnlyMode ? "Read Only Mode" : "Read Write Mode")</p>
 
 
 <!-- Dropdown Field -->
 <h2>Editable Dropdown Field</h2>
-<EditableDropdownField Label="Select Country"
+<Dropdown Label="Select Country"
                        Class="col-md-6"
                        Items="@(ViewModel.Countries)"
                        @bind-SelectedValue="@(ViewModel["SelectedCountry"])"
@@ -17,11 +17,11 @@
 
 <!-- Input Fields -->
 <h2>Editable Input Fields</h2>
-<EditableInputField Label="First Name"
+<Input Label="First Name"
                     Class="col-md-6"
                     @bind-Value="@(ViewModel.FirstName)"
                     IsReadOnly="@ViewModel.IsReadOnlyMode" />
-<EditableInputField Label="Last Name"
+<Input Label="Last Name"
                     Class="col-md-6"
                     @bind-Value="@(ViewModel["LastName"])"
                     IsReadOnly="@ViewModel.IsReadOnlyMode" />
@@ -29,7 +29,7 @@
 
 <!-- Email Field -->
 <h2>Email Fields</h2>
-<EditableEmailField Label="Email Address"
+<EmailInput Label="Email Address"
                     Class="col-md-6"
                     @bind-Value="ViewModel.Email"
                     IsReadOnly="@ViewModel.IsReadOnlyMode"
@@ -39,7 +39,7 @@
 
 <!-- Enum Dropdown -->
 <h2>Enum Dropdown Field</h2>
-<EnumDropdownField TEnum="StatusEnum"
+<EnumDropdown TEnum="StatusEnum"
                    Label="Select Status"
                    @bind-SelectedValue="ViewModel.Status"
                    IsReadOnly="@ViewModel.IsReadOnlyMode" />
@@ -47,42 +47,42 @@
 
 <!-- Date Input -->
 <h2>Date Input Field</h2>
-<DateInputField Label="Select Date"
+<DatePicker Label="Select Date"
                 @bind-Value="ViewModel.DateOfBirth"
                 IsReadOnly="@ViewModel.IsReadOnlyMode" />
 <p>Selected Date: @ViewModel.DateOfBirth.ToString("yyyy-MM-dd")</p>
 
 <!-- Number Inputs -->
 <h2>Editable Number Fields</h2>
-<EditableNumberField Label="Signed Integer Value"
+<NumberInput Label="Signed Integer Value"
                      @bind-Value="ViewModel.SignedValue"
                      IsUnsigned="false"
                      Class="col-md-6"
                      IsReadOnly="@ViewModel.IsReadOnlyMode" />
-<EditableNumberField Label="Unsigned Integer Value"
+<NumberInput Label="Unsigned Integer Value"
                      @bind-Value="ViewModel.UnsignedValue"
                      IsUnsigned="true"
                      Class="col-md-6"
                      IsReadOnly="@ViewModel.IsReadOnlyMode" />
-<EditableNumberField Label="Decimal Value"
+<NumberInput Label="Decimal Value"
                      @bind-Value="ViewModel.DecimalValue"
                      Class="col-md-6"
                      IsReadOnly="@ViewModel.IsReadOnlyMode" />
-<EditableNumberField Label="Double Value"
+<NumberInput Label="Double Value"
                      @bind-Value="ViewModel.DoubleValue"
                      Class="col-md-6"
                      IsReadOnly="@ViewModel.IsReadOnlyMode" />
 
 <!-- Textarea Field -->
 <h2>Editable Textarea Field</h2>
-<EditableTextareaField Label="Description"
+<Textarea Label="Description"
                        Class="col-md-6"
                        @bind-Value="ViewModel.Description"
                        IsReadOnly="@ViewModel.IsReadOnlyMode" />
 
 <!-- Toggle Button -->
 <h2>Toggle Button</h2>
-<ToggleButton @bind-IsOn="ViewModel.IsFeatureEnabled" IsReadOnly="@ViewModel.IsReadOnlyMode" />
+<Toggle @bind-IsOn="ViewModel.IsFeatureEnabled" IsReadOnly="@ViewModel.IsReadOnlyMode" />
 <p>Feature is @(ViewModel.IsFeatureEnabled ? "Enabled" : "Disabled")</p>
 
 <!-- Radio Group -->
