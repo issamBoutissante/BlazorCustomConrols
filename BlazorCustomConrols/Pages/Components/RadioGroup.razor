@@ -18,10 +18,14 @@
     [Parameter] public string SelectedValue { get; set; } = string.Empty;
     [Parameter] public EventCallback<string> SelectedValueChanged { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; } = false; // New Parameter
 
     public async Task SelectValue(string value)
     {
-        SelectedValue = value;
-        await SelectedValueChanged.InvokeAsync(value);
+        if (!IsReadOnly) // Prevent selection if read-only
+        {
+            SelectedValue = value;
+            await SelectedValueChanged.InvokeAsync(value);
+        }
     }
 }

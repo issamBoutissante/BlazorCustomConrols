@@ -33,8 +33,13 @@
         color: #333;
     }
 
+    .radio-button.read-only {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
 </style>
-<div class="radio-button" @onclick="HandleClick">
+<div class="radio-button @(ParentGroup.IsReadOnly ? "read-only" : "")" @onclick="HandleClick">
     <div class="circle-container">
         <div class="circle @(IsSelected ? "selected" : "")"></div>
     </div>
@@ -42,7 +47,7 @@
 </div>
 
 @code {
-    [CascadingParameter] public RadioGroup? ParentGroup { get; set; }
+    [CascadingParameter] public required RadioGroup ParentGroup { get; set; }
 
     [Parameter] public string Value { get; set; } = string.Empty;
     [Parameter] public string Label { get; set; } = string.Empty;
@@ -51,9 +56,10 @@
 
     private async Task HandleClick()
     {
-        if (ParentGroup != null)
+        if (ParentGroup?.IsReadOnly == false) // Prevent interaction if read-only
         {
             await ParentGroup.SelectValue(Value);
         }
     }
 }
+

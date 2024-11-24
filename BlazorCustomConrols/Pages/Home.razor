@@ -77,7 +77,7 @@
 
 <!-- Radio Group -->
 <h2>Radio Group</h2>
-<RadioGroup @bind-SelectedValue="ViewModel.SelectedOption">
+<RadioGroup @bind-SelectedValue="ViewModel.SelectedOption" IsReadOnly="@ViewModel.IsReadOnlyMode">
     <RadioButton Value="Option1" Label="Option 1" />
     <RadioButton Value="Option2" Label="Option 2" />
     <RadioButton Value="Option3" Label="Option 3" />
