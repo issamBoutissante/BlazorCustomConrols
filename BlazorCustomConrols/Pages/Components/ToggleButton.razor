@@ -36,18 +36,27 @@
         transform: translateX(0);
     }
 
+    .toggle-container.read-only {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
 </style>
-<div class="@(IsOn ? "toggle-container toggle-on" : "toggle-container toggle-off")" @onclick="Toggle">
+<div class="@(IsOn ? "toggle-container toggle-on" : "toggle-container toggle-off") @(IsReadOnly ? "read-only" : "")" @onclick="Toggle">
     <div class="toggle-circle"></div>
 </div>
 
 @code {
     [Parameter] public bool IsOn { get; set; }
     [Parameter] public EventCallback<bool> IsOnChanged { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; } = false; // New Parameter
 
     private async Task Toggle()
     {
-        IsOn = !IsOn;
-        await IsOnChanged.InvokeAsync(IsOn);
+        if (!IsReadOnly) // Prevent toggling if read-only
+        {
+            IsOn = !IsOn;
+            await IsOnChanged.InvokeAsync(IsOn);
+        }
     }
 }
