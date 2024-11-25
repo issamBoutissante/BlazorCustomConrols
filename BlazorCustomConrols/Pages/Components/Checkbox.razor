@@ -1,0 +1,29 @@
+﻿<div class="@(Class) form-check form-group" style="@(IsVisible ? "" : "display: none;")">
+    <label>
+        <input type="checkbox"
+               class="form-check-input"
+               checked="@Value"
+               @onchange="HandleChange"
+               disabled="@IsReadOnly" />
+        <span class="form-check-label">@Label</span>
+    </label>
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public bool Value { get; set; }
+    [Parameter] public EventCallback<bool> ValueChanged { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; } = false;
+    [Parameter] public bool IsVisible { get; set; } = true;
+    [Parameter] public string Class { get; set; } = string.Empty;
+
+    private async Task HandleChange(ChangeEventArgs e)
+    {
+        if (!IsReadOnly)
+        {
+            var newValue = (bool)e.Value!;
+            Value = newValue;
+            await ValueChanged.InvokeAsync(newValue);
+        }
+    }
+}

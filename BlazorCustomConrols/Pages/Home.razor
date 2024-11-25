@@ -94,6 +94,13 @@
 </RadioGroup>
 <p>Selected Option: @ViewModel.SelectedOption</p>
 
+<!-- CheckBox -->
+<Checkbox Label="Accept Terms and Conditions"
+          @bind-Value="ViewModel.IsTermsAccepted"
+          IsReadOnly="@ViewModel.IsReadOnlyMode"/>
+
+<p>Terms Accepted: @(ViewModel.IsTermsAccepted ? "Yes" : "No")</p>
+
 @code {
     // ViewModel holds the state for all demo controls
     private HomeViewModel ViewModel = new();

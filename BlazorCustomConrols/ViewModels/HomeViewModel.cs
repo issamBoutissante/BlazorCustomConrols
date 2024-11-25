@@ -98,6 +98,10 @@ public class HomeViewModel : INotifyPropertyChanged
     /// Toggle button state.
     /// </summary>
     public bool IsFeatureEnabled { get; set; }
+    /// <summary>
+    /// this IsTermsAccepted to test the checkbox component
+    /// </summary>
+    public bool IsTermsAccepted { get; set; }
 
     /// <summary>
     /// Event for property changes.
