@@ -101,6 +101,22 @@
 
 <p>Terms Accepted: @(ViewModel.IsTermsAccepted ? "Yes" : "No")</p>
 
+<!-- TimeSpanEdit-->
+<TimeSpanEdit Label="Minimum Setup Time"
+              @bind-Value="ViewModel.SetupTime"
+              MinValue="TimeSpan.Zero"
+              MaxValue="TimeSpan.FromHours(24)"
+              IsReadOnly="false" />
+
+<TimeSpanEdit Label="Average Cycle Time"
+              @bind-Value="ViewModel.CycleTime"
+              MinValue="TimeSpan.Zero"
+              MaxValue="TimeSpan.FromHours(24)"
+              IsReadOnly="@ViewModel.IsReadOnlyMode" />
+
+<p>Setup Time: @ViewModel.SetupTime</p>
+<p>Cycle Time: @ViewModel.CycleTime</p>
+
 @code {
     // ViewModel holds the state for all demo controls
     private HomeViewModel ViewModel = new();

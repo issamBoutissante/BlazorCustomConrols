@@ -99,9 +99,15 @@ public class HomeViewModel : INotifyPropertyChanged
     /// </summary>
     public bool IsFeatureEnabled { get; set; }
     /// <summary>
-    /// this IsTermsAccepted to test the checkbox component
+    /// This IsTermsAccepted to test the checkbox component
     /// </summary>
     public bool IsTermsAccepted { get; set; }
+
+    /// <summary>
+    /// TimeSpanEdit test props
+    /// </summary>
+    public TimeSpan SetupTime { get; set; } = TimeSpan.FromHours(1);
+    public TimeSpan CycleTime { get; set; } = TimeSpan.FromMinutes(30);
 
     /// <summary>
     /// Event for property changes.

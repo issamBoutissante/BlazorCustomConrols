@@ -1,0 +1,80 @@
+﻿<style>
+    .timespan-edit {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .time-inputs {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .time-input {
+        width: 60px;
+        text-align: center;
+    }
+
+</style>
+<div class="timespan-edit">
+    <label>@Label</label>
+    <div class="time-inputs">
+        <input type="number"
+               class="time-input"
+               min="0"
+               value="@Hours"
+               @oninput="UpdateHours"
+               disabled="@IsReadOnly" />
+        <span>hours</span>
+
+        <input type="number"
+               class="time-input"
+               min="0"
+               max="59"
+               value="@Minutes"
+               @oninput="UpdateMinutes"
+               disabled="@IsReadOnly" />
+        <span>minutes</span>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public TimeSpan Value { get; set; }
+    [Parameter] public EventCallback<TimeSpan> ValueChanged { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; } = false;
+    [Parameter] public TimeSpan MinValue { get; set; } = TimeSpan.Zero;
+    [Parameter] public TimeSpan MaxValue { get; set; } = TimeSpan.MaxValue;
+
+    private int Hours => Value.Hours + (Value.Days * 24);
+    private int Minutes => Value.Minutes;
+
+    private async Task UpdateHours(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var hours))
+        {
+            var newValue = new TimeSpan(hours, Minutes, 0);
+
+            if (newValue >= MinValue && newValue <= MaxValue)
+            {
+                Value = newValue;
+                await ValueChanged.InvokeAsync(newValue);
+            }
+        }
+    }
+
+    private async Task UpdateMinutes(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var minutes))
+        {
+            var newValue = new TimeSpan(Hours, minutes, 0);
+
+            if (newValue >= MinValue && newValue <= MaxValue)
+            {
+                Value = newValue;
+                await ValueChanged.InvokeAsync(newValue);
+            }
+        }
+    }
+}
