@@ -1,53 +1,57 @@
 ﻿<style>
     .timespan-edit {
-    display: flex;
-    align-items: center;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 4px;
-    width: 200px;
-    box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 4px;
+        width: 200px;
+        box-sizing: border-box;
     }
 
     .timespan-display {
-    flex: 1;
-    display: flex;
-    justify-content: space-around;
-    cursor: pointer;
+        flex: 1;
+        display: flex;
+        justify-content: space-around;
+        cursor: pointer;
     }
 
     .time-value {
-    padding: 0 4px;
-    cursor: pointer;
-    user-select: none;
+        padding: 0 4px;
+        cursor: pointer;
+        user-select: none;
     }
 
-    .time-value.selected {
-    background-color: #ddd;
-    border-radius: 2px;
-    }
+        .time-value.selected {
+            background-color: #ddd;
+            border-radius: 2px;
+        }
 
     .spinner {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
-    .spinner button {
-    border: none;
-    background: none;
-    cursor: pointer;
-    padding: 0;
-    font-size: 12px;
-    line-height: 1;
-    width: 20px;
-    height: 20px;
-    }
+        .spinner button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 0;
+            font-size: 11px;
+            line-height: 1;
+            width: 18px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .spinner button:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-    }
+            .spinner button:disabled {
+                cursor: not-allowed;
+                opacity: 0.5;
+            }
+
 
 </style>
 <div class="timespan-edit">
@@ -58,8 +62,12 @@
         <span>minutes</span>
     </div>
     <div class="spinner">
-        <button class="up-arrow" @onclick="Increment" disabled="@IsReadOnly">▲</button>
-        <button class="down-arrow" @onclick="Decrement" disabled="@IsReadOnly">▼</button>
+        <button class="up-arrow" @onclick="Increment" disabled="@IsReadOnly">
+            <i class="fas fa-chevron-up"></i>
+        </button>
+        <button class="down-arrow" @onclick="Decrement" disabled="@IsReadOnly">
+            <i class="fas fa-chevron-down"></i>
+        </button>
     </div>
 </div>
 
@@ -70,7 +78,7 @@
     [Parameter] public TimeSpan MinValue { get; set; } = TimeSpan.Zero;
     [Parameter] public TimeSpan MaxValue { get; set; } = TimeSpan.MaxValue;
 
-    private string SelectedField { get; set; } = string.Empty;
+    private string SelectedField { get; set; } = string.Empty; // No selection by default
 
     private int Hours => Value.Hours + (Value.Days * 24);
     private int Minutes => Value.Minutes;
@@ -95,8 +103,10 @@
         else if (SelectedField == "Minutes")
         {
             await UpdateValue(Value.Add(TimeSpan.FromMinutes(1)));
-        }else{
-            await UpdateValue(Value.Add(TimeSpan.FromHours(1)));
+        }
+        else
+        {
+            await UpdateValue(Value.Add(TimeSpan.FromHours(1))); // Default to Hours
         }
     }
 
@@ -109,8 +119,10 @@
         else if (SelectedField == "Minutes")
         {
             await UpdateValue(Value.Subtract(TimeSpan.FromMinutes(1)));
-        }else{
-            await UpdateValue(Value.Subtract(TimeSpan.FromHours(1)));
+        }
+        else
+        {
+            await UpdateValue(Value.Subtract(TimeSpan.FromHours(1))); // Default to Hours
         }
     }
 
