@@ -102,14 +102,13 @@
 <p>Terms Accepted: @(ViewModel.IsTermsAccepted ? "Yes" : "No")</p>
 
 <!-- TimeSpanEdit-->
-<TimeSpanEdit Label="Minimum Setup Time"
+<TimeSpanEdit 
               @bind-Value="ViewModel.SetupTime"
               MinValue="TimeSpan.Zero"
               MaxValue="TimeSpan.FromHours(24)"
               IsReadOnly="false" />
 
-<TimeSpanEdit Label="Average Cycle Time"
-              @bind-Value="ViewModel.CycleTime"
+<TimeSpanEdit @bind-Value="ViewModel.CycleTime"
               MinValue="TimeSpan.Zero"
               MaxValue="TimeSpan.FromHours(24)"
               IsReadOnly="@ViewModel.IsReadOnlyMode" />
