@@ -55,7 +55,7 @@
 
 </style>
 <div class="timespan-edit">
-    <div class="timespan-display" @onclick="FocusNext">
+    <div class="timespan-display">
         <span class="time-value @(SelectedField == "Hours" ? "selected" : "")" @onclick="@(() => SetSelectedField("Hours"))">@Hours</span>
         <span>hours</span>
         <span class="time-value @(SelectedField == "Minutes" ? "selected" : "")" @onclick="@(() => SetSelectedField("Minutes"))">@Minutes</span>
@@ -124,11 +124,5 @@
         {
             await UpdateValue(Value.Subtract(TimeSpan.FromHours(1))); // Default to Hours
         }
-    }
-
-    private void FocusNext()
-    {
-        // Toggle between Hours and Minutes
-        SelectedField = SelectedField == "Hours" ? "Minutes" : "Hours";
     }
 }
