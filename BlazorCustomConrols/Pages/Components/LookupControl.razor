@@ -1,0 +1,189 @@
+﻿<style>
+.lookup-container {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.lookup-input-group {
+    display: flex;
+    align-items: center;
+}
+
+.lookup-icon {
+    padding: 0.5rem;
+    cursor: pointer;
+    color: #007bff;
+}
+
+.lookup-suggestions {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    background: #fff;
+    position: absolute;
+    width: 100%;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.lookup-suggestions li {
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.lookup-suggestions li:hover {
+    background: #f1f1f1;
+}
+
+</style>
+@using System.Windows.Input
+@typeparam T
+
+<div class="lookup-container @(Class)" style="@(IsVisible ? "" : "display: none;")">
+    <label>@Label</label>
+    <div class="lookup-input-group">
+        <!-- Left Icon -->
+        <span class="lookup-icon" @onclick="OnLeftIconClick">
+            <i class="@LeftIconClass"></i>
+        </span>
+
+        <!-- Input Box -->
+        <input type="text"
+               class="form-control"
+               placeholder="@Watermark"
+               @bind-value="Text"
+               @bind-value:event="oninput"
+               disabled="@IsReadOnly"
+               @onfocus="ShowSuggestions"
+               @onblur="HideSuggestionsWithDelay" />
+
+        <!-- Right Icon -->
+        <span class="lookup-icon" @onclick="OnRightIconClick">
+            <i class="@RightIconClass"></i>
+        </span>
+    </div>
+
+    <!-- Suggestions Dropdown -->
+    @if (IsSuggestionsVisible && FilteredItems?.Any() == true)
+    {
+        <ul class="lookup-suggestions">
+            @foreach (var item in FilteredItems)
+            {
+                <li @onclick="(() => SelectItem(item))">
+                    @RenderItemTemplate(item)
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    // Parameters
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public string Watermark { get; set; } = "Search...";
+    [Parameter] public List<T>? Items { get; set; }
+    [Parameter] public T? SelectedItem { get; set; }
+    [Parameter] public EventCallback<T?> SelectedItemChanged { get; set; }
+    [Parameter] public ICommand? AddEntityCommand { get; set; }
+    [Parameter] public ICommand? ViewEntityCommand { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; } = false;
+    [Parameter] public bool IsVisible { get; set; } = true;
+    [Parameter] public string Class { get; set; } = string.Empty;
+    [Parameter] public RenderFragment<T>? ItemTemplate { get; set; }
+
+    // Internal state
+    private string Text { get; set; } = string.Empty;
+    private IEnumerable<T>? FilteredItems { get; set; }
+    private bool IsSuggestionsVisible { get; set; } = false;
+
+    // Icon Classes
+    private string LeftIconClass => GetLeftIconClass();
+    private string RightIconClass => GetRightIconClass();
+
+    private void ShowSuggestions()
+    {
+        if (!IsReadOnly)
+        {
+            FilterSuggestions();
+            IsSuggestionsVisible = true;
+        }
+    }
+
+    private async Task HideSuggestionsWithDelay()
+    {
+        await Task.Delay(200); // Add a small delay to allow click events on suggestions
+        IsSuggestionsVisible = false;
+    }
+
+    private void FilterSuggestions()
+    {
+        if (string.IsNullOrWhiteSpace(Text) || Text == "?")
+        {
+            // Show all items if '?' is entered
+            FilteredItems = Items;
+        }
+        else
+        {
+            // Filter items based on the input text
+            FilteredItems = Items?.Where(item =>
+                item != null && item.ToString()?.Contains(Text, StringComparison.OrdinalIgnoreCase) == true);
+        }
+    }
+
+    private void SelectItem(T item)
+    {
+        SelectedItem = item;
+        Text = item.ToString() ?? string.Empty;
+        IsSuggestionsVisible = false;
+        SelectedItemChanged.InvokeAsync(SelectedItem);
+    }
+
+    private string GetLeftIconClass()
+    {
+        if (SelectedItem != null)
+        {
+            return "fas fa-check"; // Checkmark icon
+        }
+        if (!string.IsNullOrWhiteSpace(Text) && (FilteredItems == null || !FilteredItems.Any()))
+        {
+            return "fas fa-exclamation-triangle"; // Warning icon
+        }
+        return "fas fa-search"; // Default search icon
+    }
+
+    private string GetRightIconClass()
+    {
+        if (SelectedItem != null)
+        {
+            return "fas fa-eye"; // View icon
+        }
+        return "fas fa-plus"; // Add icon
+    }
+
+    private void OnLeftIconClick()
+    {
+        if (SelectedItem != null && ViewEntityCommand?.CanExecute(SelectedItem) == true)
+        {
+            ViewEntityCommand.Execute(SelectedItem);
+        }
+    }
+
+    private void OnRightIconClick()
+    {
+        if (SelectedItem == null && AddEntityCommand?.CanExecute(null) == true)
+        {
+            AddEntityCommand.Execute(null);
+        }
+    }
+
+    private RenderFragment RenderItemTemplate(T item)
+    {
+        return ItemTemplate != null ? ItemTemplate(item) : (builder =>
+        {
+            builder.AddContent(0, item?.ToString());
+        });
+    }
+}

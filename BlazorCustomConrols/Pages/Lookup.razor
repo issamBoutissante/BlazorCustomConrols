@@ -1,0 +1,43 @@
+﻿@page "/lookup"
+@using System.Windows.Input
+
+<LookupControl T="Currency"
+               Label="Select Currency"
+               Watermark="Lookup a Currency..."
+               Items="@Currencies"
+               @bind-SelectedItem="SelectedCurrency"
+               AddEntityCommand="AddCurrencyCommand"
+               ViewEntityCommand="ViewCurrencyCommand">
+    <ItemTemplate>
+        <span>@context.Name (@context.Symbol)</span>
+    </ItemTemplate>
+</LookupControl>
+
+@code {
+    private List<Currency> Currencies = new()
+    {
+        new Currency { Name = "US Dollar", Symbol = "USD" },
+        new Currency { Name = "Euro", Symbol = "EUR" },
+        new Currency { Name = "British Pound", Symbol = "GBP" }
+    };
+
+    private Currency? SelectedCurrency { get; set; }
+
+    private ICommand AddCurrencyCommand => new ActionCommand(() =>
+    {
+        Console.WriteLine("Add Currency Command Executed");
+    });
+
+    private ICommand ViewCurrencyCommand => new ActionCommand(() =>
+    {
+        Console.WriteLine($"View Currency Command Executed for {SelectedCurrency?.Name}");
+    });
+    public class Currency
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Symbol { get; set; } = string.Empty;
+
+        public override string ToString() => $"{Name} ({Symbol})";
+    }
+}
+
