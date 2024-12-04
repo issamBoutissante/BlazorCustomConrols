@@ -31,15 +31,15 @@
         overflow-y: auto;
     }
 
-        .lookup-suggestions li {
-            padding: 0.5rem;
-            cursor: pointer;
-        }
+    .lookup-suggestions li {
+        padding: 0.5rem;
+        cursor: pointer;
+    }
 
-            .lookup-suggestions li:hover,
-            .lookup-suggestions li.active {
-                background: #f1f1f1;
-            }
+    .lookup-suggestions li:hover,
+    .lookup-suggestions li.active {
+        background: #f1f1f1;
+    }
 </style>
 
 <div class="lookup-container @(Class)" style="@(IsVisible ? "" : "display: none;")">
@@ -65,7 +65,8 @@
         placeholder="@Watermark"
         value="@searchText"
         @oninput="SearchTextChanged"
-        @onfocus="ShowSuggestions"/>
+        @onfocus="ShowSuggestions"
+        @onblur="HideSuggestionsWithDelay"/>
 
         <!-- Right Icon -->
         <span class="lookup-icon">
@@ -83,7 +84,9 @@
     <!-- Suggestions Dropdown -->
     @if (!IsReadOnly && SelectedItem == null && IsSuggestionsVisible && FilteredItems?.Any() == true)
     {
-        <ul class="lookup-suggestions">
+        <ul class="lookup-suggestions"
+            @onmouseover="(() => preventBlur = true)"
+            @onmouseout="(() => preventBlur = false)">
             <Virtualize TItem="T" Items="FilteredItems" Context="item">
                 <li @onclick="(() => SelectItem(item))">
                     @RenderItemTemplate(item)
@@ -138,7 +141,7 @@
     private async Task HideSuggestionsWithDelay()
     {
         if (preventBlur) return;
-        await Task.Delay(200); // Adjust blur delay
+        await Task.Delay(200);
         IsSuggestionsVisible = false;
     }
 
@@ -166,13 +169,11 @@
 
     private void SelectItem(T item)
     {
-        preventBlur = true; // Prevent blur on selection
         if (item is null) throw new NullReferenceException("selected item is null");
         SelectedItem = item;
         searchText = item.ToString() ?? string.Empty;
         IsSuggestionsVisible = false;
         SelectedItemChanged.InvokeAsync(SelectedItem);
-        preventBlur = false;
     }
 
     private void SearchTextChanged(ChangeEventArgs e)
