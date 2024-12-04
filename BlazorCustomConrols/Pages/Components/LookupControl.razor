@@ -1,45 +1,44 @@
 ﻿<style>
-.lookup-container {
-    position: relative;
-    margin-bottom: 1rem;
-}
+    .lookup-container {
+        position: relative;
+        margin-bottom: 1rem;
+    }
 
-.lookup-input-group {
-    display: flex;
-    align-items: center;
-}
+    .lookup-input-group {
+        display: flex;
+        align-items: center;
+    }
 
-.lookup-icon {
-    padding: 0.5rem;
-    cursor: pointer;
-    color: #007bff;
-}
+    .lookup-icon {
+        padding: 0.5rem;
+        cursor: pointer;
+        color: #007bff;
+    }
 
-.lookup-suggestions {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    border: 1px solid #ddd;
-    border-radius: 0.25rem;
-    background: #fff;
-    position: absolute;
-    width: 100%;
-    z-index: 1000;
-    max-height: 200px;
-    overflow-y: auto;
-}
+    .lookup-suggestions {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        border: 1px solid #ddd;
+        border-radius: 0.25rem;
+        background: #fff;
+        position: absolute;
+        width: 100%;
+        z-index: 1000;
+        max-height: 200px;
+        overflow-y: auto;
+    }
 
-.lookup-suggestions li {
-    padding: 0.5rem;
-    cursor: pointer;
-}
+        .lookup-suggestions li {
+            padding: 0.5rem;
+            cursor: pointer;
+        }
 
-.lookup-suggestions li:hover {
-    background: #f1f1f1;
-}
-
+            .lookup-suggestions li:hover {
+                background: #f1f1f1;
+            }
 </style>
-@using System.Windows.Input
+
 @typeparam T
 
 <div class="lookup-container @(Class)" style="@(IsVisible ? "" : "display: none;")">
