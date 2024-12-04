@@ -47,7 +47,7 @@
     {
         // Generate 100 fake jobs using Bogus
         var faker = new Bogus.Faker<Job>()
-            .RuleFor(j => j.BarID, f => (ulong)f.IndexFaker)
+            .RuleFor(j => j.BarID, f => (ulong)f.Random.ULong(100000, 999999)) // Generate a random ulong
             .RuleFor(j => j.Title, f => f.Name.JobTitle())
             .RuleFor(j => j.Name, f => f.Company.CompanyName());
 
