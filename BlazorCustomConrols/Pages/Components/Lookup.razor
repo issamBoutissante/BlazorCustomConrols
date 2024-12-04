@@ -14,6 +14,7 @@
     .lookup-input-group {
         display: flex;
         align-items: center;
+        position: relative;
     }
 
     .lookup-icon {
@@ -45,6 +46,34 @@
             .lookup-suggestions li.active {
                 background: #f1f1f1;
             }
+
+    .help-icon {
+        margin-left: 0.5rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+        color: gray;
+        position: relative;
+    }
+
+    .tooltip {
+        display: none;
+        position: absolute;
+        top: -40px;
+        right: 0;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 0.25rem;
+        padding: 0.5rem;
+        font-size: 0.85rem;
+        color: #333;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        width: 200px;
+    }
+
+    .help-icon:hover .tooltip {
+        display: block;
+    }
 </style>
 
 <div class="lookup-container @(Class) @(IsReadOnly ? "disabled" : "")" style="@(IsVisible ? "" : "display: none;")">
@@ -73,6 +102,20 @@
                @onfocus="ShowSuggestions"
                @onblur="HideSuggestionsWithDelay"
                readonly="@IsReadOnly" />
+
+        <!-- Help Icon -->
+        <div class="help-icon">
+            <i class="fas fa-info-circle"></i>
+            <div class="tooltip">
+                <p><strong>Search Tips:</strong></p>
+                <ul>
+                    <li><strong>Default:</strong> Search by <em>Name</em>.</li>
+                    <li><strong>?</strong>: Show all items by <em>Name</em> and set search to <em>Name</em>.</li>
+                    <li><strong>*</strong>: Show all items by <em>Title</em> and set search to <em>Title</em>.</li>
+                    <li><strong>#</strong>: Show all items by <em>BarID</em> and set search to <em>BarID</em>.</li>
+                </ul>
+            </div>
+        </div>
 
         <!-- Right Icon -->
         <span class="lookup-icon">
