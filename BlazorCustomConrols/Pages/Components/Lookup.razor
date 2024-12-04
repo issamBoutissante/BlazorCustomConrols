@@ -65,8 +65,7 @@
         placeholder="@Watermark"
         value="@searchText"
         @oninput="SearchTextChanged"
-        @onfocus="ShowSuggestions"
-        @onblur="HideSuggestionsWithDelay" />
+        @onfocus="ShowSuggestions"/>
 
         <!-- Right Icon -->
         <span class="lookup-icon">
@@ -85,12 +84,11 @@
     @if (!IsReadOnly && SelectedItem == null && IsSuggestionsVisible && FilteredItems?.Any() == true)
     {
         <ul class="lookup-suggestions">
-            <Virtualize ItemsProvider="GetVirtualizedItems" Context="item">
-                <li @onclick="(() => SelectItem(item.value))">
-                    @RenderItemTemplate(item.value)
+            <Virtualize TItem="T" Items="FilteredItems" Context="item">
+                <li @onclick="(() => SelectItem(item))">
+                    @RenderItemTemplate(item)
                 </li>
             </Virtualize>
-
         </ul>
     }
 </div>
@@ -107,7 +105,8 @@
     [Parameter] public string Class { get; set; } = string.Empty;
     [Parameter] public RenderFragment<T>? ItemTemplate { get; set; }
     private string searchText { get; set; } = string.Empty;
-    private IEnumerable<T>? FilteredItems { get; set; }
+    private ICollection<T>? FilteredItems { get; set; }
+
     private bool IsSuggestionsVisible { get; set; } = false;
     private bool preventBlur { get; set; } = false;
 
@@ -138,7 +137,7 @@
 
     private async Task HideSuggestionsWithDelay()
     {
-        //if (preventBlur) return;
+        if (preventBlur) return;
         await Task.Delay(200); // Adjust blur delay
         IsSuggestionsVisible = false;
     }
@@ -147,7 +146,7 @@
     {
         if (string.IsNullOrWhiteSpace(searchText))
         {
-            FilteredItems = Enumerable.Empty<T>();
+            FilteredItems = [];
             return;
         }
         else if (searchText.Trim() == "?")
@@ -158,8 +157,9 @@
         else
         {
             // Filter items based on the input text
-            FilteredItems = Items?.Where(item =>
-                item != null && item.ToString()?.Contains(searchText, StringComparison.OrdinalIgnoreCase) == true);
+            FilteredItems = Items?
+     .Where(item => item != null && item.ToString()?.Contains(searchText, StringComparison.OrdinalIgnoreCase) == true)
+     .ToList();
         }
         IsSuggestionsVisible = FilteredItems?.Any() == true;
     }
