@@ -1,4 +1,4 @@
-﻿@typeparam T
+﻿@typeparam T where T : IBaseEntity
 
 <style>
     .lookup-container {
@@ -126,24 +126,6 @@
             FilterSuggestions();
         }
     }
-    private async ValueTask<ItemsProviderResult<(T value, int index)>> GetVirtualizedItems(ItemsProviderRequest request)
-    {
-        if (FilteredItems == null)
-        {
-            return new ItemsProviderResult<(T value, int index)>(Array.Empty<(T, int)>(), 0);
-        }
-
-        // Slice the FilteredItems based on the requested range
-        var items = FilteredItems
-            .Select((value, index) => (value, index))
-            .Skip(request.StartIndex)
-            .Take(request.Count)
-            .ToArray();
-
-        return new ItemsProviderResult<(T value, int index)>(items, FilteredItems.Count());
-    }
-
-
     private async Task HideSuggestionsWithDelay()
     {
         if (preventBlur) return;

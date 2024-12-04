@@ -1,52 +1,44 @@
 ﻿@page "/lookup"
 
-<h1>Maker.AI Controls Demo</h1>
+<h1>Lookup Control Demo</h1>
 <Toggle @bind-IsOn="IsReadOnlyMode" />
-<p>Controls are @(IsReadOnlyMode ? "Read Only Mode" : "Read Write Mode")</p>
+<p>Mode: @(IsReadOnlyMode ? "Read Only" : "Editable")</p>
 
-
-<Lookup T="Currency"
-        Watermark="Lookup a Currency..."
-        Items="@Currencies"
-        @bind-SelectedItem="SelectedCurrency"
-        AddEntityCommand="AddCurrencyCommand"
-        IsReadOnly="IsReadOnlyMode"
-        ViewEntityCommand="ViewCurrencyCommand">
+<Lookup T="Job"
+    Watermark="Lookup a Job..."
+    Items="@Jobs"
+    @bind-SelectedItem="SelectedJob"
+    AddEntityCommand="AddJobCommand"
+    IsReadOnly="IsReadOnlyMode"
+    ViewEntityCommand="ViewJobCommand">
     <ItemTemplate>
-        <span>@context.Name (@context.Symbol)</span>
+        <span>@context["Name"] (@context["Title"])</span>
     </ItemTemplate>
 </Lookup>
 
 @code {
     private bool IsReadOnlyMode;
-    private List<Currency> Currencies { get; set; } = new();
-    private Currency? SelectedCurrency { get; set; }
+    private List<Job> Jobs { get; set; } = new();
+    private Job? SelectedJob { get; set; }
 
-    private ICommand AddCurrencyCommand => new ActionCommand(() =>
+    private ICommand AddJobCommand => new ActionCommand(() =>
     {
-        Console.WriteLine("Add Currency Command Executed");
+        Console.WriteLine("Add Job Command Executed");
     });
 
-    private ICommand ViewCurrencyCommand => new ActionCommand(() =>
+    private ICommand ViewJobCommand => new ActionCommand(() =>
     {
-        Console.WriteLine($"View Currency Command Executed for {SelectedCurrency?.Name}");
+        Console.WriteLine($"View Job Command Executed for {SelectedJob?.Name}");
     });
 
     protected override void OnInitialized()
     {
-        // Generate 100 fake currencies using Bogus
-        var faker = new Bogus.Faker<Currency>()
-            .RuleFor(c => c.Name, f => f.Finance.Currency().Description)
-            .RuleFor(c => c.Symbol, f => f.Finance.Currency().Code);
+        // Generate 100 fake jobs using Bogus
+        var faker = new Bogus.Faker<Job>()
+            .RuleFor(j => j.BarID, f => (ulong)f.IndexFaker)
+            .RuleFor(j => j.Title, f => f.Name.JobTitle())
+            .RuleFor(j => j.Name, f => f.Company.CompanyName());
 
-        Currencies = faker.Generate(100);
-    }
-
-    public class Currency
-    {
-        public string Name { get; set; } = string.Empty;
-        public string Symbol { get; set; } = string.Empty;
-
-        public override string ToString() => $"{Name} ({Symbol})";
+        Jobs = faker.Generate(100);
     }
 }
