@@ -44,7 +44,7 @@
 <div class="lookup-container @(Class)" style="@(IsVisible ? "" : "display: none;")">
     <div class="lookup-input-group" disabled="@IsReadOnly">
         <!-- Left Icon -->
-        <span class="lookup-icon" @onclick="OnLeftIconClick">
+        <span class="lookup-icon">
             @if (!string.IsNullOrWhiteSpace(searchText) && SelectedItem == null && (FilteredItems == null || !FilteredItems.Any()))
             {
                 <span key="warning"><i class="fas fa-exclamation-triangle"></i></span> <!-- Warning icon -->
@@ -68,14 +68,14 @@
                @onblur="HideSuggestionsWithDelay" />
 
         <!-- Right Icon -->
-        <span class="lookup-icon" @onclick="OnRightIconClick">
+        <span class="lookup-icon">
             @if (SelectedItem != null)
             {
-                <span key="view"><i class="fas fa-eye"></i></span> <!-- View icon -->
+                <span key="view" @onclick="OnViewIconClick"><i class="fas fa-eye"></i></span> <!-- View icon -->
             }
             else
             {
-                <span key="add"><i class="fas fa-plus"></i></span> <!-- Add icon -->
+                <span key="add" @onclick="OnAddIconClick"><i class="fas fa-plus"></i></span> <!-- Add icon -->
             }
         </span>
     </div>
@@ -164,7 +164,7 @@
             FilterSuggestions();
         }
     }
-    private void OnLeftIconClick()
+    private void OnViewIconClick()
     {
         if (SelectedItem != null && ViewEntityCommand?.CanExecute(SelectedItem) == true)
         {
@@ -172,7 +172,7 @@
         }
     }
 
-    private void OnRightIconClick()
+    private void OnAddIconClick()
     {
         if (SelectedItem == null && AddEntityCommand?.CanExecute(null) == true)
         {

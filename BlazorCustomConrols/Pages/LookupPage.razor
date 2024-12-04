@@ -1,6 +1,6 @@
 ﻿@page "/lookup"
 
-<LookupControl T="Currency"
+<Lookup T="Currency"
                Watermark="Lookup a Currency..."
                Items="@Currencies"
                @bind-SelectedItem="SelectedCurrency"
@@ -9,7 +9,7 @@
     <ItemTemplate>
         <span>@context.Name (@context.Symbol)</span>
     </ItemTemplate>
-</LookupControl>
+</Lookup>
 
 @code {
     private List<Currency> Currencies = new()
