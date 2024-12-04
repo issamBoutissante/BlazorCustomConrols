@@ -84,6 +84,10 @@
             {
                 <span key="warning"><i class="fas fa-exclamation-triangle"></i></span> <!-- Warning icon -->
             }
+            else if (SelectedItem != null)
+            {
+                <span key="check" @onclick="OnCheckIconClick"><i class="fas fa-check"></i></span> <!-- Checkmark icon -->
+            }
             else
             {
                 <span key="search"><i class="fas fa-search"></i></span> <!-- Default search icon -->
@@ -115,14 +119,7 @@
 
         <!-- Right Icon -->
         <span class="lookup-icon">
-            @if (SelectedItem != null)
-            {
-                <span key="view" @onclick="OnViewIconClick"><i class="fas fa-eye"></i></span> <!-- View icon -->
-            }
-            else
-            {
-                <span key="add" @onclick="OnAddIconClick"><i class="fas fa-plus"></i></span> <!-- Add icon -->
-            }
+            <span key="add" @onclick="OnAddIconClick"><i class="fas fa-plus"></i></span> <!-- Add icon -->
         </span>
     </div>
 
@@ -147,7 +144,7 @@
     [Parameter] public T? SelectedItem { get; set; }
     [Parameter] public EventCallback<T?> SelectedItemChanged { get; set; }
     [Parameter] public ICommand? AddEntityCommand { get; set; }
-    [Parameter] public ICommand? ViewEntityCommand { get; set; }
+    [Parameter] public ICommand? CheckEntityCommand { get; set; }
     [Parameter] public bool IsReadOnly { get; set; } = false;
     [Parameter] public bool IsVisible { get; set; } = true;
     [Parameter] public string Class { get; set; } = string.Empty;
@@ -223,11 +220,11 @@
         }
     }
 
-    private void OnViewIconClick()
+    private void OnCheckIconClick()
     {
-        if (SelectedItem != null && ViewEntityCommand?.CanExecute(SelectedItem) == true)
+        if (SelectedItem != null && CheckEntityCommand?.CanExecute(SelectedItem) == true)
         {
-            ViewEntityCommand.Execute(SelectedItem);
+            CheckEntityCommand.Execute(SelectedItem);
         }
     }
 
