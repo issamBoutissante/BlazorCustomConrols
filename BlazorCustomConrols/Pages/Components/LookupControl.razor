@@ -64,7 +64,7 @@
     </div>
 
     <!-- Suggestions Dropdown -->
-    @if (!IsReadOnly && IsSuggestionsVisible && FilteredItems?.Any() == true)
+    @if (!IsReadOnly && SelectedItem == null && IsSuggestionsVisible && FilteredItems?.Any() == true)
     {
         <ul class="lookup-suggestions">
             @foreach (var item in FilteredItems)
@@ -142,6 +142,8 @@
 
     private void SearchTextChanged(ChangeEventArgs e)
     {
+        // we have to reset the selected item when input changed
+        this.SelectedItem = default(T);
         if (e.Value is string newValue)
         {
             searchText = newValue;
