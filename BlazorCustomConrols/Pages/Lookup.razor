@@ -1,7 +1,6 @@
 ﻿@page "/lookup"
 
 <LookupControl T="Currency"
-               Label="Select Currency"
                Watermark="Lookup a Currency..."
                Items="@Currencies"
                @bind-SelectedItem="SelectedCurrency"
@@ -38,7 +37,8 @@
 
         public override string ToString() => $"{Name} ({Symbol})";
     }
-
 }
+
+
 
 
