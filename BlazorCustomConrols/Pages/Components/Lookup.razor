@@ -1,4 +1,5 @@
 ﻿@typeparam T where T : IBaseEntity
+@inject IJSRuntime JSRuntime
 
 <style>
     .lookup-container {
@@ -82,15 +83,15 @@
         <span class="lookup-icon">
             @if (IsInListMode && SelectedItem != null)
             {
-                <span key="check" @onclick="OnCheckIconClick"><i class="fas fa-check"></i></span> <!-- Checkmark icon -->
+                <span key="check" @onclick="OnCheckIconClick"><i class="fas fa-check"></i></span>
             }
             else if (!string.IsNullOrWhiteSpace(searchText) && SelectedItem == null && (FilteredItems == null || !FilteredItems.Any()))
             {
-                <span key="warning"><i class="fas fa-exclamation-triangle"></i></span> <!-- Warning icon -->
+                <span key="warning"><i class="fas fa-exclamation-triangle"></i></span>
             }
             else
             {
-                <span key="search"><i class="fas fa-search"></i></span> <!-- Default search icon -->
+                <span key="search"><i class="fas fa-search"></i></span>
             }
         </span>
 
@@ -102,6 +103,7 @@
         @oninput="SearchTextChanged"
         @onfocus="ShowSuggestions"
         @onblur="HideSuggestionsWithDelay"
+        @onkeydown="HandleKeyDown"
         readonly="@IsReadOnly" />
 
         <!-- Help Icon -->
@@ -122,11 +124,11 @@
         <span class="lookup-icon">
             @if (!IsInListMode && SelectedItem != null)
             {
-                <span key="view" @onclick="OnViewIconClick"><i class="fas fa-eye"></i></span> <!-- View icon -->
+                <span key="view" @onclick="OnViewIconClick"><i class="fas fa-eye"></i></span>
             }
             else
             {
-                <span key="add" @onclick="OnAddIconClick"><i class="fas fa-plus"></i></span> <!-- Add icon -->
+                <span key="add" @onclick="OnAddIconClick"><i class="fas fa-plus"></i></span>
             }
         </span>
     </div>
@@ -138,7 +140,8 @@
         @onmouseover="(() => preventBlur = true)"
         @onmouseout="(() => preventBlur = false)">
             <Virtualize TItem="T" Items="FilteredItems" Context="item">
-                <li @onclick="(() => SelectItem(item))">
+                <li @onclick="(() => SelectItem(item))"
+                class="@(item.Equals(HighlightedItem) ? "active" : "")">
                     <span>@item[DisplayPath.ToString()]</span>
                 </li>
             </Virtualize>
@@ -147,20 +150,23 @@
 </div>
 
 @code {
-    [Parameter] public bool IsInListMode { get; set; } = false; // Toggle between Lookup and LookupInList
+    [Parameter] public bool IsInListMode { get; set; } = false;
     [Parameter] public string Watermark { get; set; } = "Search...";
     [Parameter] public List<T>? Items { get; set; }
     [Parameter] public T? SelectedItem { get; set; }
     [Parameter] public EventCallback<T?> SelectedItemChanged { get; set; }
     [Parameter] public ICommand? AddEntityCommand { get; set; }
     [Parameter] public ICommand? ViewEntityCommand { get; set; }
-    [Parameter] public ICommand? CheckEntityCommand { get; set; } // For InListMode
+    [Parameter] public ICommand? CheckEntityCommand { get; set; }
     [Parameter] public bool IsReadOnly { get; set; } = false;
     [Parameter] public bool IsVisible { get; set; } = true;
     [Parameter] public string Class { get; set; } = string.Empty;
     [Parameter] public LookupDispayPath DisplayPath { get; set; } = LookupDispayPath.Name;
+
     private string searchText { get; set; } = string.Empty;
     private ICollection<T>? FilteredItems { get; set; }
+    private T? HighlightedItem { get; set; } // Currently highlighted item
+    private int HighlightedIndex { get; set; } = -1; // Index of the highlighted item
 
     private bool IsSuggestionsVisible { get; set; } = false;
     private bool preventBlur { get; set; } = false;
@@ -209,6 +215,50 @@
                 .ToList();
         }
         IsSuggestionsVisible = FilteredItems?.Any() == true;
+        HighlightedIndex = -1;
+        HighlightedItem = default(T);
+    }
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "ArrowDown")
+        {
+            MoveHighlight(1);
+        }
+        else if (e.Key == "ArrowUp")
+        {
+            MoveHighlight(-1);
+        }
+        else if (e.Key == "Enter" && HighlightedItem != null)
+        {
+            SelectItem(HighlightedItem);
+        }
+    }
+
+    private void MoveHighlight(int direction)
+    {
+        if (FilteredItems == null || !FilteredItems.Any()) return;
+
+        HighlightedIndex += direction;
+
+        if (HighlightedIndex < 0)
+        {
+            HighlightedIndex = FilteredItems.Count - 1;
+        }
+        else if (HighlightedIndex >= FilteredItems.Count)
+        {
+            HighlightedIndex = 0;
+        }
+
+        HighlightedItem = FilteredItems.ElementAt(HighlightedIndex);
+
+        // Scroll to keep the highlighted item in view
+        ScrollToHighlightedItem();
+    }
+
+    private void ScrollToHighlightedItem()
+    {
+        JSRuntime.InvokeVoidAsync("scrollToHighlightedItemSmooth");
     }
 
     private void SelectItem(T item)
@@ -251,3 +301,20 @@
         Name
     }
 }
+<script>
+       function scrollToHighlightedItemSmooth() {
+        var container = document.querySelector(".lookup-suggestions");
+        var highlighted = container?.querySelector(".active");
+
+        if (container && highlighted) {
+            var containerRect = container.getBoundingClientRect();
+            var highlightedRect = highlighted.getBoundingClientRect();
+            var scrollOffset = highlightedRect.top - containerRect.top - (containerRect.height / 2) + (highlightedRect.height / 2);
+
+            container.scrollTo({
+                top: container.scrollTop + scrollOffset,
+                behavior: "smooth",
+            });
+        }
+    }
+</script>
