@@ -1,45 +1,46 @@
-﻿<style>
+﻿@typeparam T
+
+<style>
     .lookup-container {
-    position: relative;
-    margin-bottom: 1rem;
+        position: relative;
+        margin-bottom: 1rem;
     }
 
     .lookup-input-group {
-    display: flex;
-    align-items: center;
+        display: flex;
+        align-items: center;
     }
 
     .lookup-icon {
-    padding: 0.5rem;
-    cursor: pointer;
-    color: #007bff;
+        padding: 0.5rem;
+        cursor: pointer;
+        color: #007bff;
     }
 
     .lookup-suggestions {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    border: 1px solid #ddd;
-    border-radius: 0.25rem;
-    background: #fff;
-    position: absolute;
-    width: 100%;
-    z-index: 1000;
-    max-height: 200px;
-    overflow-y: auto;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        border: 1px solid #ddd;
+        border-radius: 0.25rem;
+        background: #fff;
+        position: absolute;
+        width: 100%;
+        z-index: 1000;
+        max-height: 200px;
+        overflow-y: auto;
     }
 
-    .lookup-suggestions li {
-    padding: 0.5rem;
-    cursor: pointer;
-    }
+        .lookup-suggestions li {
+            padding: 0.5rem;
+            cursor: pointer;
+        }
 
-    .lookup-suggestions li:hover {
-    background: #f1f1f1;
-    }
+            .lookup-suggestions li:hover,
+            .lookup-suggestions li.active {
+                background: #f1f1f1;
+            }
 </style>
-
-@typeparam T
 
 <div class="lookup-container @(Class)" style="@(IsVisible ? "" : "display: none;")">
     <div class="lookup-input-group" disabled="@IsReadOnly">
@@ -60,12 +61,12 @@
         </span>
         <!-- Input Box -->
         <input type="text"
-               class="form-control"
-               placeholder="@Watermark"
-               value="@searchText"
-               @oninput="SearchTextChanged"
-               @onfocus="ShowSuggestions"
-               @onblur="HideSuggestionsWithDelay" />
+        class="form-control"
+        placeholder="@Watermark"
+        value="@searchText"
+        @oninput="SearchTextChanged"
+        @onfocus="ShowSuggestions"
+        @onblur="HideSuggestionsWithDelay" />
 
         <!-- Right Icon -->
         <span class="lookup-icon">
@@ -84,12 +85,12 @@
     @if (!IsReadOnly && SelectedItem == null && IsSuggestionsVisible && FilteredItems?.Any() == true)
     {
         <ul class="lookup-suggestions">
-            @foreach (var item in FilteredItems)
-            {
-                <li @onclick="(() => SelectItem(item))">
-                    @RenderItemTemplate(item)
+            <Virtualize ItemsProvider="GetVirtualizedItems" Context="item">
+                <li @onclick="(() => SelectItem(item.value))">
+                    @RenderItemTemplate(item.value)
                 </li>
-            }
+            </Virtualize>
+
         </ul>
     }
 </div>
@@ -108,7 +109,7 @@
     private string searchText { get; set; } = string.Empty;
     private IEnumerable<T>? FilteredItems { get; set; }
     private bool IsSuggestionsVisible { get; set; } = false;
-
+    private bool preventBlur { get; set; } = false;
 
     private void ShowSuggestions()
     {
@@ -117,10 +118,28 @@
             FilterSuggestions();
         }
     }
+    private async ValueTask<ItemsProviderResult<(T value, int index)>> GetVirtualizedItems(ItemsProviderRequest request)
+    {
+        if (FilteredItems == null)
+        {
+            return new ItemsProviderResult<(T value, int index)>(Array.Empty<(T, int)>(), 0);
+        }
+
+        // Slice the FilteredItems based on the requested range
+        var items = FilteredItems
+            .Select((value, index) => (value, index))
+            .Skip(request.StartIndex)
+            .Take(request.Count)
+            .ToArray();
+
+        return new ItemsProviderResult<(T value, int index)>(items, FilteredItems.Count());
+    }
+
 
     private async Task HideSuggestionsWithDelay()
     {
-        await Task.Delay(2000); 
+        //if (preventBlur) return;
+        await Task.Delay(200); // Adjust blur delay
         IsSuggestionsVisible = false;
     }
 
@@ -147,16 +166,17 @@
 
     private void SelectItem(T item)
     {
+        preventBlur = true; // Prevent blur on selection
         if (item is null) throw new NullReferenceException("selected item is null");
         SelectedItem = item;
         searchText = item.ToString() ?? string.Empty;
         IsSuggestionsVisible = false;
         SelectedItemChanged.InvokeAsync(SelectedItem);
+        preventBlur = false;
     }
 
     private void SearchTextChanged(ChangeEventArgs e)
     {
-        // we have to reset the selected item when input changed
         this.SelectedItem = default(T);
         if (e.Value is string newValue)
         {
