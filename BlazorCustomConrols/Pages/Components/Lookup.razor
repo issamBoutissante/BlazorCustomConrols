@@ -43,7 +43,7 @@
 </style>
 
 <div class="lookup-container @(Class)" style="@(IsVisible ? "" : "display: none;")">
-    <div class="lookup-input-group" disabled="@IsReadOnly">
+    <div class="lookup-input-group">
         <!-- Left Icon -->
         <span class="lookup-icon">
             @if (!string.IsNullOrWhiteSpace(searchText) && SelectedItem == null && (FilteredItems == null || !FilteredItems.Any()))

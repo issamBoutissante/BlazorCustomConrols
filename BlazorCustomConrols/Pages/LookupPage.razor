@@ -1,10 +1,16 @@
 ﻿@page "/lookup"
 
+<h1>Maker.AI Controls Demo</h1>
+<Toggle @bind-IsOn="IsReadOnlyMode" />
+<p>Controls are @(IsReadOnlyMode ? "Read Only Mode" : "Read Write Mode")</p>
+
+
 <Lookup T="Currency"
         Watermark="Lookup a Currency..."
         Items="@Currencies"
         @bind-SelectedItem="SelectedCurrency"
         AddEntityCommand="AddCurrencyCommand"
+        IsReadOnly="IsReadOnlyMode"
         ViewEntityCommand="ViewCurrencyCommand">
     <ItemTemplate>
         <span>@context.Name (@context.Symbol)</span>
@@ -12,6 +18,7 @@
 </Lookup>
 
 @code {
+    private bool IsReadOnlyMode;
     private List<Currency> Currencies { get; set; } = new();
     private Currency? SelectedCurrency { get; set; }
 
