@@ -66,13 +66,13 @@
         </span>
         <!-- Input Box -->
         <input type="text"
-        class="form-control"
-        placeholder="@Watermark"
-        value="@searchText"
-        @oninput="SearchTextChanged"
-        @onfocus="ShowSuggestions"
-        @onblur="HideSuggestionsWithDelay"
-        readonly="@IsReadOnly" />
+               class="form-control"
+               placeholder="@Watermark"
+               value="@searchText"
+               @oninput="SearchTextChanged"
+               @onfocus="ShowSuggestions"
+               @onblur="HideSuggestionsWithDelay"
+               readonly="@IsReadOnly" />
 
         <!-- Right Icon -->
         <span class="lookup-icon">
@@ -91,11 +91,11 @@
     @if (!IsReadOnly && SelectedItem == null && IsSuggestionsVisible && FilteredItems?.Any() == true)
     {
         <ul class="lookup-suggestions"
-        @onmouseover="(() => preventBlur = true)"
-        @onmouseout="(() => preventBlur = false)">
+            @onmouseover="(() => preventBlur = true)"
+            @onmouseout="(() => preventBlur = false)">
             <Virtualize TItem="T" Items="FilteredItems" Context="item">
                 <li @onclick="(() => SelectItem(item))">
-                    <span>@item[this.DispayPath.ToString()]</span>
+                    <span>@item[DisplayPath.ToString()]</span>
                 </li>
             </Virtualize>
         </ul>
@@ -112,7 +112,7 @@
     [Parameter] public bool IsReadOnly { get; set; } = false;
     [Parameter] public bool IsVisible { get; set; } = true;
     [Parameter] public string Class { get; set; } = string.Empty;
-    [Parameter] public LookupDispayPath DispayPath { get; set; } = LookupDispayPath.Name;
+    [Parameter] public LookupDispayPath DisplayPath { get; set; } = LookupDispayPath.Name;
     private string searchText { get; set; } = string.Empty;
     private ICollection<T>? FilteredItems { get; set; }
 
@@ -126,6 +126,7 @@
             FilterSuggestions();
         }
     }
+
     private async Task HideSuggestionsWithDelay()
     {
         if (preventBlur) return;
@@ -135,7 +136,6 @@
 
     private void FilterSuggestions()
     {
-        this.DispayPath = LookupDispayPath.Name;
         if (string.IsNullOrWhiteSpace(searchText))
         {
             FilteredItems = [];
@@ -143,27 +143,25 @@
         }
         else if (searchText.Trim() == "?")
         {
-            // Show all items by name if '?' is entered
+            DisplayPath = LookupDispayPath.Name;
             FilteredItems = Items;
         }
-        else if(searchText.Trim() == "*"){
-            // Show all items by name if '?' is entered
-            this.DispayPath = LookupDispayPath.Title;
+        else if (searchText.Trim() == "*")
+        {
+            DisplayPath = LookupDispayPath.Title;
             FilteredItems = Items;
         }
         else if (searchText.Trim() == "#")
         {
-            // Show all items by name if '?' is entered
-            this.DispayPath = LookupDispayPath.BarID;
+            DisplayPath = LookupDispayPath.BarID;
             FilteredItems = Items;
         }
         else
         {
-            // Filter items based on the input text
             FilteredItems = Items?
-             .Where(item => item != null && item[LookupDispayPath.Name.ToString()]?.Contains(searchText, StringComparison.OrdinalIgnoreCase) == true)
-             .ToList();
-                }
+                .Where(item => item[DisplayPath.ToString()]?.Contains(searchText, StringComparison.OrdinalIgnoreCase) == true)
+                .ToList();
+        }
         IsSuggestionsVisible = FilteredItems?.Any() == true;
     }
 
@@ -185,6 +183,7 @@
             FilterSuggestions();
         }
     }
+
     private void OnViewIconClick()
     {
         if (SelectedItem != null && ViewEntityCommand?.CanExecute(SelectedItem) == true)
@@ -200,6 +199,7 @@
             AddEntityCommand.Execute(null);
         }
     }
+
     public enum LookupDispayPath
     {
         BarID,
