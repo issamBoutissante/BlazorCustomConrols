@@ -231,26 +231,17 @@
 
     private void OnCheckIconClick()
     {
-        if (IsInListMode && SelectedItem != null && CheckEntityCommand?.CanExecute(SelectedItem) == true)
-        {
-            CheckEntityCommand.Execute(SelectedItem);
-        }
+        CheckEntityCommand?.Execute(SelectedItem);
     }
 
     private void OnViewIconClick()
     {
-        if (SelectedItem != null && ViewEntityCommand?.CanExecute(SelectedItem) == true)
-        {
-            ViewEntityCommand.Execute(SelectedItem);
-        }
+        ViewEntityCommand?.Execute(SelectedItem);
     }
 
     private void OnAddIconClick()
     {
-        if (SelectedItem == null && AddEntityCommand?.CanExecute(null) == true)
-        {
-            AddEntityCommand.Execute(null);
-        }
+        AddEntityCommand?.Execute(null);
     }
 
     public enum LookupDispayPath

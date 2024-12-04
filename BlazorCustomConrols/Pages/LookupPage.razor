@@ -18,7 +18,7 @@
         Watermark="Lookup a Job..."
         Items="@Jobs"
         IsInListMode="true"
-        @bind-SelectedItem="SelectedJob"
+        @bind-SelectedItem="SelectedJobForInListMode"
         AddEntityCommand="AddJobCommand"
         IsReadOnly="IsReadOnlyMode"
         CheckEntityCommand="ViewJobCommand">
@@ -28,6 +28,7 @@
     private bool IsReadOnlyMode;
     private List<Job> Jobs { get; set; } = new();
     private Job? SelectedJob { get; set; }
+    private Job? SelectedJobForInListMode { get; set; }
 
     private ICommand AddJobCommand => new ActionCommand(() =>
     {
@@ -40,7 +41,7 @@
     });
     private ICommand CheckJobCommand => new ActionCommand(() =>
     {
-        Console.WriteLine($"Check Job Command Executed for {SelectedJob?.Name}");
+        Console.WriteLine($"Check Job Command Executed for {SelectedJobForInListMode?.Name}");
     });
 
     protected override void OnInitialized()
