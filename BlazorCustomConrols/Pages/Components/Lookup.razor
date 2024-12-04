@@ -66,13 +66,13 @@
         </span>
         <!-- Input Box -->
         <input type="text"
-               class="form-control"
-               placeholder="@Watermark"
-               value="@searchText"
-               @oninput="SearchTextChanged"
-               @onfocus="ShowSuggestions"
-               @onblur="HideSuggestionsWithDelay"
-               readonly="@IsReadOnly" />
+        class="form-control"
+        placeholder="@Watermark"
+        value="@searchText"
+        @oninput="SearchTextChanged"
+        @onfocus="ShowSuggestions"
+        @onblur="HideSuggestionsWithDelay"
+        readonly="@IsReadOnly" />
 
         <!-- Right Icon -->
         <span class="lookup-icon">
@@ -91,11 +91,11 @@
     @if (!IsReadOnly && SelectedItem == null && IsSuggestionsVisible && FilteredItems?.Any() == true)
     {
         <ul class="lookup-suggestions"
-            @onmouseover="(() => preventBlur = true)"
-            @onmouseout="(() => preventBlur = false)">
+        @onmouseover="(() => preventBlur = true)"
+        @onmouseout="(() => preventBlur = false)">
             <Virtualize TItem="T" Items="FilteredItems" Context="item">
                 <li @onclick="(() => SelectItem(item))">
-                    @RenderItemTemplate(item)
+                    <span>@item[this.DispayPath.ToString()]</span>
                 </li>
             </Virtualize>
         </ul>
@@ -112,7 +112,7 @@
     [Parameter] public bool IsReadOnly { get; set; } = false;
     [Parameter] public bool IsVisible { get; set; } = true;
     [Parameter] public string Class { get; set; } = string.Empty;
-    [Parameter] public RenderFragment<T>? ItemTemplate { get; set; }
+    [Parameter] public LookupDispayPath DispayPath { get; set; } = LookupDispayPath.Name;
     private string searchText { get; set; } = string.Empty;
     private ICollection<T>? FilteredItems { get; set; }
 
@@ -135,6 +135,7 @@
 
     private void FilterSuggestions()
     {
+        this.DispayPath = LookupDispayPath.Name;
         if (string.IsNullOrWhiteSpace(searchText))
         {
             FilteredItems = [];
@@ -142,16 +143,27 @@
         }
         else if (searchText.Trim() == "?")
         {
-            // Show all items if '?' is entered
+            // Show all items by name if '?' is entered
+            FilteredItems = Items;
+        }
+        else if(searchText.Trim() == "*"){
+            // Show all items by name if '?' is entered
+            this.DispayPath = LookupDispayPath.Title;
+            FilteredItems = Items;
+        }
+        else if (searchText.Trim() == "#")
+        {
+            // Show all items by name if '?' is entered
+            this.DispayPath = LookupDispayPath.BarID;
             FilteredItems = Items;
         }
         else
         {
             // Filter items based on the input text
             FilteredItems = Items?
-     .Where(item => item != null && item.ToString()?.Contains(searchText, StringComparison.OrdinalIgnoreCase) == true)
-     .ToList();
-        }
+             .Where(item => item != null && item[LookupDispayPath.Name.ToString()]?.Contains(searchText, StringComparison.OrdinalIgnoreCase) == true)
+             .ToList();
+                }
         IsSuggestionsVisible = FilteredItems?.Any() == true;
     }
 
@@ -188,12 +200,10 @@
             AddEntityCommand.Execute(null);
         }
     }
-
-    private RenderFragment RenderItemTemplate(T item)
+    public enum LookupDispayPath
     {
-        return ItemTemplate != null ? ItemTemplate(item) : (builder =>
-        {
-            builder.AddContent(0, item?.ToString());
-        });
+        BarID,
+        Title,
+        Name
     }
 }
