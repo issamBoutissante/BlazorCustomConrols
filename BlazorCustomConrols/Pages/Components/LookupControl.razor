@@ -52,8 +52,8 @@
         <input type="text"
                class="form-control"
                placeholder="@Watermark"
-               @bind-value="Text"
-               @bind-value:event="oninput"
+               value="@searchText"
+               @oninput="SearchTextChanged"
                @onfocus="ShowSuggestions"
                @onblur="HideSuggestionsWithDelay" />
 
@@ -88,9 +88,7 @@
     [Parameter] public bool IsVisible { get; set; } = true;
     [Parameter] public string Class { get; set; } = string.Empty;
     [Parameter] public RenderFragment<T>? ItemTemplate { get; set; }
-
-    // Internal state
-    private string Text { get; set; } = string.Empty;
+    private string searchText { get; set; } = string.Empty;
     private IEnumerable<T>? FilteredItems { get; set; }
     private bool IsSuggestionsVisible { get; set; } = false;
 
@@ -103,7 +101,6 @@
         if (!IsReadOnly)
         {
             FilterSuggestions();
-            IsSuggestionsVisible = FilteredItems?.Any() == true;
         }
     }
 
@@ -115,10 +112,12 @@
 
     private void FilterSuggestions()
     {
-        if (string.IsNullOrWhiteSpace(Text)){
-            FilteredItems = [];
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            FilteredItems = Enumerable.Empty<T>();
+            return;
         }
-        else if (Text.Trim() == "?")
+        else if (searchText.Trim() == "?")
         {
             // Show all items if '?' is entered
             FilteredItems = Items;
@@ -127,22 +126,32 @@
         {
             // Filter items based on the input text
             FilteredItems = Items?.Where(item =>
-                item != null && item.ToString()?.Contains(Text, StringComparison.OrdinalIgnoreCase) == true);
+                item != null && item.ToString()?.Contains(searchText, StringComparison.OrdinalIgnoreCase) == true);
         }
+        IsSuggestionsVisible = FilteredItems?.Any() == true;
     }
 
     private void SelectItem(T item)
     {
         if (item is null) throw new NullReferenceException("selected item is null");
         SelectedItem = item;
-        Text = item.ToString() ?? string.Empty;
+        searchText = item.ToString() ?? string.Empty;
         IsSuggestionsVisible = false;
         SelectedItemChanged.InvokeAsync(SelectedItem);
     }
 
+    private void SearchTextChanged(ChangeEventArgs e)
+    {
+        if (e.Value is string newValue)
+        {
+            searchText = newValue;
+            FilterSuggestions();
+        }
+    }
+
     private string GetLeftIconClass()
     {
-        if (!string.IsNullOrWhiteSpace(Text) && SelectedItem == null && (FilteredItems == null || !FilteredItems.Any()))
+        if (!string.IsNullOrWhiteSpace(searchText) && SelectedItem == null && (FilteredItems == null || !FilteredItems.Any()))
         {
             return "fas fa-exclamation-triangle"; // Warning icon
         }
