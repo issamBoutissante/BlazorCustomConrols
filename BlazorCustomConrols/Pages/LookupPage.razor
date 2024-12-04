@@ -3,7 +3,7 @@
 <h1>Lookup Control Demo</h1>
 <Toggle @bind-IsOn="IsReadOnlyMode" />
 <p>Mode: @(IsReadOnlyMode ? "Read Only" : "Editable")</p>
-
+<label>Lookup</label>
 <Lookup T="Job"
     Watermark="Lookup a Job..."
     Items="@Jobs"
@@ -11,6 +11,17 @@
     AddEntityCommand="AddJobCommand"
     IsReadOnly="IsReadOnlyMode"
     ViewEntityCommand="ViewJobCommand">
+</Lookup>
+<hr />
+<label>Lookup (with enabling IsInListMode)</label>
+<Lookup T="Job"
+        Watermark="Lookup a Job..."
+        Items="@Jobs"
+        IsInListMode="true"
+        @bind-SelectedItem="SelectedJob"
+        AddEntityCommand="AddJobCommand"
+        IsReadOnly="IsReadOnlyMode"
+        CheckEntityCommand="ViewJobCommand">
 </Lookup>
 
 @code {
@@ -26,6 +37,10 @@
     private ICommand ViewJobCommand => new ActionCommand(() =>
     {
         Console.WriteLine($"View Job Command Executed for {SelectedJob?.Name}");
+    });
+    private ICommand CheckJobCommand => new ActionCommand(() =>
+    {
+        Console.WriteLine($"Check Job Command Executed for {SelectedJob?.Name}");
     });
 
     protected override void OnInitialized()

@@ -214,7 +214,7 @@
     private void SelectItem(T item)
     {
         SelectedItem = item;
-        searchText = item.ToString() ?? string.Empty;
+        searchText = @item[DisplayPath.ToString()] ?? string.Empty;
         IsSuggestionsVisible = false;
         SelectedItemChanged.InvokeAsync(SelectedItem);
     }
