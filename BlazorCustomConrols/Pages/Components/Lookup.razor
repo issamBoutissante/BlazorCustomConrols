@@ -80,7 +80,11 @@
     <div class="lookup-input-group">
         <!-- Left Icon -->
         <span class="lookup-icon">
-            @if (!string.IsNullOrWhiteSpace(searchText) && SelectedItem == null && (FilteredItems == null || !FilteredItems.Any()))
+            @if (IsInListMode && SelectedItem != null)
+            {
+                <span key="check" @onclick="OnCheckIconClick"><i class="fas fa-check"></i></span> <!-- Checkmark icon -->
+            }
+            else if (!string.IsNullOrWhiteSpace(searchText) && SelectedItem == null && (FilteredItems == null || !FilteredItems.Any()))
             {
                 <span key="warning"><i class="fas fa-exclamation-triangle"></i></span> <!-- Warning icon -->
             }
@@ -89,15 +93,16 @@
                 <span key="search"><i class="fas fa-search"></i></span> <!-- Default search icon -->
             }
         </span>
+
         <!-- Input Box -->
         <input type="text"
-               class="form-control"
-               placeholder="@Watermark"
-               value="@searchText"
-               @oninput="SearchTextChanged"
-               @onfocus="ShowSuggestions"
-               @onblur="HideSuggestionsWithDelay"
-               readonly="@IsReadOnly" />
+        class="form-control"
+        placeholder="@Watermark"
+        value="@searchText"
+        @oninput="SearchTextChanged"
+        @onfocus="ShowSuggestions"
+        @onblur="HideSuggestionsWithDelay"
+        readonly="@IsReadOnly" />
 
         <!-- Help Icon -->
         <div class="help-icon">
@@ -115,7 +120,7 @@
 
         <!-- Right Icon -->
         <span class="lookup-icon">
-            @if (SelectedItem != null)
+            @if (!IsInListMode && SelectedItem != null)
             {
                 <span key="view" @onclick="OnViewIconClick"><i class="fas fa-eye"></i></span> <!-- View icon -->
             }
@@ -130,8 +135,8 @@
     @if (!IsReadOnly && SelectedItem == null && IsSuggestionsVisible && FilteredItems?.Any() == true)
     {
         <ul class="lookup-suggestions"
-            @onmouseover="(() => preventBlur = true)"
-            @onmouseout="(() => preventBlur = false)">
+        @onmouseover="(() => preventBlur = true)"
+        @onmouseout="(() => preventBlur = false)">
             <Virtualize TItem="T" Items="FilteredItems" Context="item">
                 <li @onclick="(() => SelectItem(item))">
                     <span>@item[DisplayPath.ToString()]</span>
@@ -142,12 +147,14 @@
 </div>
 
 @code {
+    [Parameter] public bool IsInListMode { get; set; } = false; // Toggle between Lookup and LookupInList
     [Parameter] public string Watermark { get; set; } = "Search...";
     [Parameter] public List<T>? Items { get; set; }
     [Parameter] public T? SelectedItem { get; set; }
     [Parameter] public EventCallback<T?> SelectedItemChanged { get; set; }
     [Parameter] public ICommand? AddEntityCommand { get; set; }
     [Parameter] public ICommand? ViewEntityCommand { get; set; }
+    [Parameter] public ICommand? CheckEntityCommand { get; set; } // For InListMode
     [Parameter] public bool IsReadOnly { get; set; } = false;
     [Parameter] public bool IsVisible { get; set; } = true;
     [Parameter] public string Class { get; set; } = string.Empty;
@@ -206,7 +213,6 @@
 
     private void SelectItem(T item)
     {
-        if (item is null) throw new NullReferenceException("selected item is null");
         SelectedItem = item;
         searchText = item.ToString() ?? string.Empty;
         IsSuggestionsVisible = false;
@@ -215,11 +221,19 @@
 
     private void SearchTextChanged(ChangeEventArgs e)
     {
-        this.SelectedItem = default(T);
+        SelectedItem = default(T);
         if (e.Value is string newValue)
         {
             searchText = newValue;
             FilterSuggestions();
+        }
+    }
+
+    private void OnCheckIconClick()
+    {
+        if (IsInListMode && SelectedItem != null && CheckEntityCommand?.CanExecute(SelectedItem) == true)
+        {
+            CheckEntityCommand.Execute(SelectedItem);
         }
     }
 
