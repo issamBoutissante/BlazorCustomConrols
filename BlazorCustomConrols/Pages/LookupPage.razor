@@ -1,24 +1,18 @@
 ﻿@page "/lookup"
 
 <Lookup T="Currency"
-               Watermark="Lookup a Currency..."
-               Items="@Currencies"
-               @bind-SelectedItem="SelectedCurrency"
-               AddEntityCommand="AddCurrencyCommand"
-               ViewEntityCommand="ViewCurrencyCommand">
+        Watermark="Lookup a Currency..."
+        Items="@Currencies"
+        @bind-SelectedItem="SelectedCurrency"
+        AddEntityCommand="AddCurrencyCommand"
+        ViewEntityCommand="ViewCurrencyCommand">
     <ItemTemplate>
         <span>@context.Name (@context.Symbol)</span>
     </ItemTemplate>
 </Lookup>
 
 @code {
-    private List<Currency> Currencies = new()
-    {
-        new Currency { Name = "US Dollar", Symbol = "USD" },
-        new Currency { Name = "Euro", Symbol = "EUR" },
-        new Currency { Name = "British Pound", Symbol = "GBP" }
-    };
-
+    private List<Currency> Currencies { get; set; } = new();
     private Currency? SelectedCurrency { get; set; }
 
     private ICommand AddCurrencyCommand => new ActionCommand(() =>
@@ -30,6 +24,17 @@
     {
         Console.WriteLine($"View Currency Command Executed for {SelectedCurrency?.Name}");
     });
+
+    protected override void OnInitialized()
+    {
+        // Generate 100 fake currencies using Bogus
+        var faker = new Bogus.Faker<Currency>()
+            .RuleFor(c => c.Name, f => f.Finance.Currency().Description)
+            .RuleFor(c => c.Symbol, f => f.Finance.Currency().Code);
+
+        Currencies = faker.Generate(100);
+    }
+
     public class Currency
     {
         public string Name { get; set; } = string.Empty;
@@ -38,7 +43,3 @@
         public override string ToString() => $"{Name} ({Symbol})";
     }
 }
-
-
-
-
