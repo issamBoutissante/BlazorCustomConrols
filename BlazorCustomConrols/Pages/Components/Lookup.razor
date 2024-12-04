@@ -6,6 +6,11 @@
         margin-bottom: 1rem;
     }
 
+        .lookup-container.disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
     .lookup-input-group {
         display: flex;
         align-items: center;
@@ -31,18 +36,18 @@
         overflow-y: auto;
     }
 
-    .lookup-suggestions li {
-        padding: 0.5rem;
-        cursor: pointer;
-    }
+        .lookup-suggestions li {
+            padding: 0.5rem;
+            cursor: pointer;
+        }
 
-    .lookup-suggestions li:hover,
-    .lookup-suggestions li.active {
-        background: #f1f1f1;
-    }
+            .lookup-suggestions li:hover,
+            .lookup-suggestions li.active {
+                background: #f1f1f1;
+            }
 </style>
 
-<div class="lookup-container @(Class)" style="@(IsVisible ? "" : "display: none;")">
+<div class="lookup-container @(Class) @(IsReadOnly ? "disabled" : "")" style="@(IsVisible ? "" : "display: none;")">
     <div class="lookup-input-group">
         <!-- Left Icon -->
         <span class="lookup-icon">
@@ -61,12 +66,13 @@
         </span>
         <!-- Input Box -->
         <input type="text"
-        class="form-control"
-        placeholder="@Watermark"
-        value="@searchText"
-        @oninput="SearchTextChanged"
-        @onfocus="ShowSuggestions"
-        @onblur="HideSuggestionsWithDelay"/>
+               class="form-control"
+               placeholder="@Watermark"
+               value="@searchText"
+               @oninput="SearchTextChanged"
+               @onfocus="ShowSuggestions"
+               @onblur="HideSuggestionsWithDelay"
+               readonly="@IsReadOnly" />
 
         <!-- Right Icon -->
         <span class="lookup-icon">
