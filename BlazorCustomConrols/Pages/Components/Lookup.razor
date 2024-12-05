@@ -150,35 +150,75 @@
 </div>
 
 @code {
+    // Parameters to configure the component's behavior and appearance
+
+    // Indicates whether the control operates in "list mode"
     [Parameter] public bool IsInListMode { get; set; } = false;
+
+    // Placeholder text to display in the input box when no text is entered
     [Parameter] public string Watermark { get; set; } = "Search...";
+
+    // The collection of items to search and display in the suggestions dropdown
     [Parameter] public List<T>? Items { get; set; }
+
+    // The currently selected item
     [Parameter] public T? SelectedItem { get; set; }
+
+    // Event callback triggered when the selected item changes
     [Parameter] public EventCallback<T?> SelectedItemChanged { get; set; }
+
+    // Command to execute when adding a new entity
     [Parameter] public ICommand? AddEntityCommand { get; set; }
+
+    // Command to execute when viewing an entity
     [Parameter] public ICommand? ViewEntityCommand { get; set; }
+
+    // Command to execute when checking an entity in list mode
     [Parameter] public ICommand? CheckEntityCommand { get; set; }
+
+    // Indicates whether the control is read-only
     [Parameter] public bool IsReadOnly { get; set; } = false;
+
+    // Indicates whether the control is visible
     [Parameter] public bool IsVisible { get; set; } = true;
+
+    // Additional CSS class names to apply to the container
     [Parameter] public string Class { get; set; } = string.Empty;
+
+    // Determines which property of the item is used for display and filtering
     [Parameter] public LookupDispayPath DisplayPath { get; set; } = LookupDispayPath.Name;
 
-    private string searchText { get; set; } = string.Empty;
-    private ICollection<T>? FilteredItems { get; set; }
-    private T? HighlightedItem { get; set; } // Currently highlighted item
-    private int HighlightedIndex { get; set; } = -1; // Index of the highlighted item
+    // Private fields to manage component state
 
+    // Text entered in the search input box
+    private string searchText { get; set; } = string.Empty;
+
+    // Filtered list of items to display in the suggestions dropdown
+    private ICollection<T>? FilteredItems { get; set; }
+
+    // The item currently highlighted in the dropdown
+    private T? HighlightedItem { get; set; }
+
+    // Index of the highlighted item in the filtered list
+    private int HighlightedIndex { get; set; } = -1;
+
+    // Indicates whether the suggestions dropdown is visible
     private bool IsSuggestionsVisible { get; set; } = false;
+
+    // Prevents the dropdown from hiding when interacting with it
     private bool preventBlur { get; set; } = false;
+
+    // Lifecycle method to handle parameter updates
     protected override void OnParametersSet()
     {
-        // Set the searchText to the selected item's display value if a SelectedItem is already provided
+        // If a selected item is provided, set the search text to its display value
         if (SelectedItem != null)
         {
             searchText = SelectedItem[DisplayPath.ToString()] ?? string.Empty;
         }
     }
 
+    // Show the suggestions dropdown
     private void ShowSuggestions()
     {
         if (!IsReadOnly)
@@ -187,6 +227,7 @@
         }
     }
 
+    // Hide the suggestions dropdown after a short delay
     private async Task HideSuggestionsWithDelay()
     {
         if (preventBlur) return;
@@ -194,13 +235,16 @@
         IsSuggestionsVisible = false;
     }
 
+    // Filter the items based on the entered search text
     private void FilterSuggestions()
     {
+        // Handle empty search text
         if (string.IsNullOrWhiteSpace(searchText))
         {
             FilteredItems = [];
             return;
         }
+        // Handle special search commands
         else if (searchText.Trim() == "?")
         {
             DisplayPath = LookupDispayPath.Name;
@@ -218,37 +262,43 @@
         }
         else
         {
+            // Filter items by matching the search text with the display property
             FilteredItems = Items?
                 .Where(item => item[DisplayPath.ToString()]?.Contains(searchText, StringComparison.OrdinalIgnoreCase) == true)
                 .ToList();
         }
+
+        // Update dropdown visibility and reset highlight
         IsSuggestionsVisible = FilteredItems?.Any() == true;
         HighlightedIndex = -1;
         HighlightedItem = default(T);
     }
 
+    // Handle keyboard navigation and selection in the suggestions dropdown
     private void HandleKeyDown(KeyboardEventArgs e)
     {
         if (e.Key == "ArrowDown")
         {
-            MoveHighlight(1);
+            MoveHighlight(1); // Move the highlight down
         }
         else if (e.Key == "ArrowUp")
         {
-            MoveHighlight(-1);
+            MoveHighlight(-1); // Move the highlight up
         }
         else if (e.Key == "Enter" && HighlightedItem != null)
         {
-            SelectItem(HighlightedItem);
+            SelectItem(HighlightedItem); // Select the highlighted item
         }
     }
 
+    // Move the highlight in the dropdown by the specified direction
     private void MoveHighlight(int direction)
     {
         if (FilteredItems == null || !FilteredItems.Any()) return;
 
         HighlightedIndex += direction;
 
+        // Loop the highlight when reaching the start or end of the list
         if (HighlightedIndex < 0)
         {
             HighlightedIndex = FilteredItems.Count - 1;
@@ -260,15 +310,17 @@
 
         HighlightedItem = FilteredItems.ElementAt(HighlightedIndex);
 
-        // Scroll to keep the highlighted item in view
+        // Scroll the dropdown to keep the highlighted item visible
         ScrollToHighlightedItem();
     }
 
+    // Use JavaScript to scroll the dropdown to the highlighted item
     private void ScrollToHighlightedItem()
     {
         JSRuntime.InvokeVoidAsync("scrollToHighlightedItemSmooth");
     }
 
+    // Select an item from the suggestions dropdown
     private void SelectItem(T item)
     {
         SelectedItem = item;
@@ -277,9 +329,10 @@
         SelectedItemChanged.InvokeAsync(SelectedItem);
     }
 
+    // Trigger filtering when the search text changes
     private void SearchTextChanged(ChangeEventArgs e)
     {
-        SelectedItem = default(T);
+        SelectedItem = default(T); // Reset selected item
         if (e.Value is string newValue)
         {
             searchText = newValue;
@@ -287,6 +340,7 @@
         }
     }
 
+    // Execute commands for actions: check, view, and add
     private void OnCheckIconClick()
     {
         CheckEntityCommand?.Execute(SelectedItem);
@@ -302,6 +356,7 @@
         AddEntityCommand?.Execute(null);
     }
 
+    // Enum to specify the display property for items
     public enum LookupDispayPath
     {
         BarID,
@@ -309,6 +364,7 @@
         Name
     }
 }
+
 <script>
        function scrollToHighlightedItemSmooth() {
         var container = document.querySelector(".lookup-suggestions");
