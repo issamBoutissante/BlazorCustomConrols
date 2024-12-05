@@ -53,11 +53,10 @@ CheckEntityCommand="ViewJobCommand">
             .RuleFor(j => j.Name, f => f.Company.CompanyName());
 
         Jobs = faker.Generate(100);
-        UpdatedSelectedJobsAsync();
+        //UpdatedSelectedJobsAsync();
 
     }
-    private async void UpdatedSelectedJobsAsync(){
-        await Task.Delay(4000);
+    private void UpdatedSelectedJobsAsync(){
         this.SelectedJob = Jobs[10];
         this.SelectedJobForInListMode = Jobs[20];
         StateHasChanged();
