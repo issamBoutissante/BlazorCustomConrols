@@ -126,14 +126,15 @@
 
         <!-- Input Box -->
         <input type="text"
-        class="lookup-input"
-        placeholder="@Watermark"
-        value="@searchText"
-        @oninput="SearchTextChanged"
-        @onfocus="ShowSuggestions"
-        @onblur="HideSuggestionsWithDelay"
-        @onkeydown="HandleKeyDown"
-        readonly="@IsReadOnly" />
+               class="lookup-input"
+               placeholder="@Watermark"
+               value="@searchText"
+               spellcheck="false"
+               @oninput="SearchTextChanged"
+               @onfocus="ShowSuggestions"
+               @onblur="HideSuggestionsWithDelay"
+               @onkeydown="HandleKeyDown"
+               readonly="@IsReadOnly" />
 
         <!-- Help Icon -->
         <div class="lookup-icon help-icon">
