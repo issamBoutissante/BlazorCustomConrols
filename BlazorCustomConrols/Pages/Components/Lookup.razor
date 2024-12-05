@@ -170,6 +170,14 @@
 
     private bool IsSuggestionsVisible { get; set; } = false;
     private bool preventBlur { get; set; } = false;
+    protected override void OnParametersSet()
+    {
+        // Set the searchText to the selected item's display value if a SelectedItem is already provided
+        if (SelectedItem != null)
+        {
+            searchText = SelectedItem[DisplayPath.ToString()] ?? string.Empty;
+        }
+    }
 
     private void ShowSuggestions()
     {

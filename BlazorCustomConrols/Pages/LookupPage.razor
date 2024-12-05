@@ -5,23 +5,23 @@
 <p>Mode: @(IsReadOnlyMode ? "Read Only" : "Editable")</p>
 <label>Lookup</label>
 <Lookup T="Job"
-    Watermark="Lookup a Job..."
-    Items="@Jobs"
-    @bind-SelectedItem="SelectedJob"
-    AddEntityCommand="AddJobCommand"
-    IsReadOnly="IsReadOnlyMode"
-    ViewEntityCommand="ViewJobCommand">
+Watermark="Lookup a Job..."
+Items="@Jobs"
+@bind-SelectedItem="SelectedJob"
+AddEntityCommand="AddJobCommand"
+IsReadOnly="IsReadOnlyMode"
+ViewEntityCommand="ViewJobCommand">
 </Lookup>
 <hr />
 <label>Lookup (with enabling IsInListMode)</label>
 <Lookup T="Job"
-        Watermark="Lookup a Job..."
-        Items="@Jobs"
-        IsInListMode="true"
-        @bind-SelectedItem="SelectedJobForInListMode"
-        AddEntityCommand="AddJobCommand"
-        IsReadOnly="IsReadOnlyMode"
-        CheckEntityCommand="ViewJobCommand">
+Watermark="Lookup a Job..."
+Items="@Jobs"
+IsInListMode="true"
+@bind-SelectedItem="SelectedJobForInListMode"
+AddEntityCommand="AddJobCommand"
+IsReadOnly="IsReadOnlyMode"
+CheckEntityCommand="ViewJobCommand">
 </Lookup>
 
 @code {
@@ -53,5 +53,13 @@
             .RuleFor(j => j.Name, f => f.Company.CompanyName());
 
         Jobs = faker.Generate(100);
+        UpdatedSelectedJobsAsync();
+
+    }
+    private async void UpdatedSelectedJobsAsync(){
+        await Task.Delay(4000);
+        this.SelectedJob = Jobs[10];
+        this.SelectedJobForInListMode = Jobs[20];
+        StateHasChanged();
     }
 }
