@@ -189,7 +189,7 @@
     [Parameter] public string Watermark { get; set; } = "Search...";
 
     // The collection of items to search and display in the suggestions dropdown
-    [Parameter] public List<T>? Items { get; set; }
+    [Parameter] public IList<T>? Items { get; set; }
 
     // The currently selected item
     [Parameter] public T? SelectedItem { get; set; }
