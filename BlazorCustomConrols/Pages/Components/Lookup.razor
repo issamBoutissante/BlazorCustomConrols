@@ -1,10 +1,13 @@
 ﻿@typeparam T where T : IBaseEntity
 @inject IJSRuntime JSRuntime
-
 <style>
     .lookup-container {
         position: relative;
         margin-bottom: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 0.25rem;
+        display: flex;
+        flex-direction: column;
     }
 
         .lookup-container.disabled {
@@ -15,13 +18,65 @@
     .lookup-input-group {
         display: flex;
         align-items: center;
-        position: relative;
+        background-color: #fff;
+        padding: 0;
     }
 
     .lookup-icon {
-        padding: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
         cursor: pointer;
+        background-color: #f9f9f9;
         color: #007bff;
+    }
+
+        .lookup-icon:first-child {
+            border-right: 1px solid #ddd;
+        }
+
+        .lookup-icon:last-child {
+            border-left: 1px solid #ddd;
+        }
+
+    .lookup-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        padding: 0.5rem;
+        font-size: 1rem;
+        background-color: transparent;
+    }
+
+        .lookup-input:focus {
+            outline: none;
+        }
+
+    .help-icon {
+        position: relative;
+    }
+
+    .lookup-tooltip {
+        display: none;
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 0.25rem;
+        padding: 0.5rem;
+        font-size: 0.85rem;
+        color: #333;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        width: 250px;
+    }
+
+    .help-icon:hover .lookup-tooltip {
+        display: block;
     }
 
     .lookup-suggestions {
@@ -32,6 +87,8 @@
         border-radius: 0.25rem;
         background: #fff;
         position: absolute;
+        top: 100%;
+        left: 0;
         width: 100%;
         z-index: 1000;
         max-height: 200px;
@@ -41,40 +98,14 @@
         .lookup-suggestions li {
             padding: 0.5rem;
             cursor: pointer;
+            display: flex;
+            align-items: center;
         }
 
             .lookup-suggestions li:hover,
             .lookup-suggestions li.active {
                 background: #f1f1f1;
             }
-
-    .help-icon {
-        margin-left: 0.5rem;
-        font-size: 0.9rem;
-        cursor: pointer;
-        color: gray;
-        position: relative;
-    }
-
-    .lookup-tooltip {
-        display: none;
-        position: absolute;
-        top: -40px;
-        right: 0;
-        background-color: #f9f9f9;
-        border: 1px solid #ddd;
-        border-radius: 0.25rem;
-        padding: 0.5rem;
-        font-size: 0.85rem;
-        color: #333;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-        z-index: 1000;
-        width: 200px;
-    }
-
-    .help-icon:hover .lookup-tooltip {
-        display: block;
-    }
 </style>
 
 <div class="lookup-container @(Class) @(IsReadOnly ? "disabled" : "")" style="@(IsVisible ? "" : "display: none;")">
@@ -97,7 +128,7 @@
 
         <!-- Input Box -->
         <input type="text"
-        class="form-control"
+        class="lookup-input"
         placeholder="@Watermark"
         value="@searchText"
         @oninput="SearchTextChanged"
@@ -107,7 +138,7 @@
         readonly="@IsReadOnly" />
 
         <!-- Help Icon -->
-        <div class="help-icon">
+        <div class="lookup-icon help">
             <i class="fas fa-info-circle"></i>
             <div class="lookup-tooltip">
                 <p><strong>Search Tips:</strong></p>
